@@ -1,0 +1,127 @@
+<div class="global-container">
+    <div class="players-container">
+        <mat-grid-list cols="2" rowHeight="50vh">
+            <mat-grid-tile
+                    class="rival-tile"
+                    (click)="changeImg(rival)"
+                    *ngFor="let rival of rivals"
+                    [colspan]="1"
+                    [rowspan]="1"
+                    [style.color]="rival.color"
+                    [style.background-image]="getImg(rival)"
+                    [style.background-color]="getBackgroundColor(rival)">
+                <p class="rival-name">{{rival.name}}</p>
+                <p class="rival-clothes">
+                    {{ rival.hasFolded ? 'folds ' : '' }}
+                    <mat-icon>woman</mat-icon>
+                    {{ rival.leftStages }}
+                </p>
+                <p class="rival-money">
+                    <mat-icon>payments</mat-icon>
+                    {{ rival.money }}
+                </p>
+                <div class="rival-cards" [class.ocultar]="!game.showCards">
+                    <div class="rival-card" *ngFor="let card of rival.hand | sortHand" [style.background-image]="getCardImg(card.image)"></div>
+                </div>
+            </mat-grid-tile>
+
+            <mat-grid-tile
+                    class="rival-tile"
+                    *ngFor="let resto of restRivals()"
+                    [colspan]="1"
+                    [rowspan]="1">
+                <button mat-raised-button color="accent" (click)="addRival()">Add rival</button>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+
+    <div class="you-container">
+        <div class="chat">
+            <p *ngFor="let chat of chats"
+               [style.color]="getChatColor(chat)"
+               [style.font-style]="getChatStyle(chat)"
+               [style.text-align]="getChatAlign(chat)">{{chat.who | titlecase }}: {{chat.msg}}</p>
+        </div>
+
+        <div class="game-stats">
+            <span>Pot: {{game.pot}}</span>
+            <span>To you: {{you.toYou}}</span>
+        </div>
+
+        <div class="you-stats">
+            <span class="negrita">{{ you.name | titlecase }}</span>
+            <span>
+                <mat-icon>payments</mat-icon>
+                {{ you.money }}
+            </span>
+            <span>
+                <mat-icon>man</mat-icon>
+                {{ you.leftStages }}
+            </span>
+        </div>
+
+        <button class="progress-button" [hidden]="!endGame" [disabled]="loading" color="primary" (click)="newGame()"
+                mat-raised-button>
+            <mat-icon>handshake</mat-icon>
+            New Game
+        </button>
+        <button class="progress-button" [hidden]="game.currentStep !== 0 || endGame" [disabled]="loading" color="primary" (click)="dealAction()"
+                mat-raised-button>
+            <mat-icon>style</mat-icon>
+            Deal
+        </button>
+        <button class="progress-button" [hidden]="!canDiscard()" [disabled]="loading" color="primary" (click)="discardAction()" mat-raised-button>
+            <mat-icon>flip</mat-icon>
+            Discard
+        </button>
+        <!-- Este lo muestro cuando no estoy mostando los anteriores -->
+        <div class="placeholder" [hidden]="game.currentStep === 0 || game.currentStep === 4 || endGame"></div>
+
+        <div class="action-buttons" [class.ocultar]="game.currentStep === 0 || endGame">
+            <button [class.ocultar]="!canStay()" [disabled]="loading" color="primary" (click)="stayAction()" mat-raised-button>
+                <mat-icon>back_hand</mat-icon>
+                Stay
+            </button>
+            <button [disabled]="!canCall() || loading || canStay()" color="primary" (click)="callAction()" mat-raised-button>
+                <mat-icon>call</mat-icon>
+                Call<span *ngIf="you.toYou > 0"> ({{you.toYou}})</span>
+            </button>
+            <button [disabled]="!canFold() || loading" color="primary" (click)="foldAction()" mat-raised-button>
+                <mat-icon>logout</mat-icon>
+                Fold
+            </button>
+        </div>
+
+        <div class="bid-buttons" [class.ocultar]="game.currentStep === 0 || endGame">
+            <button [disabled]="!canBid(5) || loading" color="accent" (click)="bidAction(5)" mat-icon-button>5</button>
+            <button [disabled]="!canBid(10) || loading" color="accent" (click)="bidAction(10)" mat-icon-button>10</button>
+            <button [disabled]="!canBid(15) || loading" color="accent" (click)="bidAction(15)" mat-icon-button>15</button>
+            <button [disabled]="!canBid(20) || loading" color="accent" (click)="bidAction(20)" mat-icon-button>20</button>
+            <button [disabled]="!canBid(25) || loading" color="accent" (click)="bidAction(25)" mat-icon-button>25</button>
+        </div>
+
+        <div class="my-cards" [class.ocultar]="game.currentStep === 0 || endGame">
+            <div class="my-card" *ngFor="let card of you.hand | sortHand" (click)="discard(card)"
+                 [class.discarded]="isDiscarded(card)"
+                 [style.background-image]="getCardImg(card.image)"></div>
+        </div>
+
+        <div class="cheat-buttons" [class.ocultar]="game.currentStep === 0 || endGame">
+            <button [disabled]="!canCheat(1) || loading" color="warn" (click)="cheatShowCards()" mat-stroked-button matTooltip="Show rival cards"
+                    matTooltipShowDelay="1000">
+                <mat-icon>visibility</mat-icon>
+                25
+            </button>
+            <button [disabled]="!canCheat(2) || loading" color="warn" (click)="cheatCannotFold()" mat-stroked-button matTooltip="Cannot fold"
+                    matTooltipShowDelay="1000">
+                <mat-icon>open_in_new_off</mat-icon>
+                50
+            </button>
+            <button [disabled]="!canCheat(3) || loading" color="warn" (click)="cheatWinningHand()" mat-stroked-button matTooltip="Winning hand"
+                    matTooltipShowDelay="1000">
+                <mat-icon>emoji_events</mat-icon>
+                100
+            </button>
+        </div>
+    </div>
+</div>

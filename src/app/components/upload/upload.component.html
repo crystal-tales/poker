@@ -1,0 +1,143 @@
+<mat-toolbar color="primary" class="app-toolbar mat-elevation-z4">
+    <h3>Create a new rival</h3>
+    <span class="select-container"></span>
+    <button mat-flat-button (click)="backNav()" color="accent">
+        <mat-icon color="">arrow_back</mat-icon>
+        Back
+    </button>
+</mat-toolbar>
+
+<div class="global-container" cdkDropListGroup>
+    <div class="drop-container">
+        <!-- File drop List -->
+        <h2>Added images</h2>
+        <div cdkDropList appDragDrop (files)="filesDropped($event)"
+             [cdkDropListData]="back"
+             class="stage-vertical-list"
+             (cdkDropListDropped)="drop($event)">
+            <!--<div class="example-box" *ngFor="let item of back" cdkDrag>{{item}}</div>-->
+            <div class="stage-box" *ngFor="let file of back" cdkDrag>
+                <img *ngIf="file" [src]="file['url']" width="100px" height="100px" class="img-center"/>
+            </div>
+        </div>
+        <div class="text">Drop the images here</div>
+    </div>
+
+    <div class="stages-container">
+        <div class="name-container">
+            <div class="name">
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>Name</mat-label>
+                    <input type="text" matInput [(ngModel)]="name" required (input)="alphaNumberOnly($event)" (paste)="onPaste($event)">
+                    <mat-icon matSuffix color="primary">woman</mat-icon>
+                    <mat-hint class="text">Name of the rival to add</mat-hint>
+                </mat-form-field>
+            </div>
+
+            <div class="stage-container portrait">
+                <h2>Portrait</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="portrait"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of portrait" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">1 image</div>
+            </div>
+        </div>
+
+        <div class="lists-container">
+            <div class="stage-container">
+                <h2>5 clothes</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage5"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage5" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+
+            <div class="stage-container">
+                <h2>4 clothes</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage4"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage4" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+
+            <div class="stage-container">
+                <h2>3 clothes</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage3"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage3" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+
+            <div class="stage-container">
+                <h2>2 clothes</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage2"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage2" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+
+            <div class="stage-container">
+                <h2>1 cloth</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage1"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage1" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+
+            <div class="stage-container">
+                <h2>Without clothes</h2>
+                <div cdkDropList
+                     cdkDropListOrientation="horizontal"
+                     [cdkDropListData]="stage0"
+                     class="stage-list"
+                     (cdkDropListDropped)="drop($event)">
+                    <div class="stage-box" *ngFor="let file of stage0" cdkDrag>
+                        <img *ngIf="file" [src]="file['url']" width="100px" height="100px"/>
+                    </div>
+                </div>
+                <div class="text">Max 10 images</div>
+            </div>
+        </div>
+
+        <div class="center">
+            <button mat-raised-button (click)="upload()" color="primary" [disabled]="checkDisabled()">Create rival</button>
+        </div>
+    </div>
+
+</div>

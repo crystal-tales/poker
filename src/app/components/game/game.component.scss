@@ -1,0 +1,150 @@
+.ocultar {
+    display: none !important;
+}
+
+.placeholder {
+    height: 56px;
+}
+
+.global-container {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+}
+
+.players-container {
+    width: 80vw;
+}
+
+.rival-tile {
+    background-color: #404040;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: 1px solid #222;
+}
+
+.rival-name {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    text-shadow: 1px 1px 2px black;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.rival-clothes {
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    text-shadow: 1px 1px 2px black;
+}
+
+.rival-money {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    text-shadow: 1px 1px 2px black;
+}
+
+.rival-cards {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    text-shadow: 1px 1px 2px black;
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.rival-card {
+    width: 40px;
+    height: 70px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.rival-msg {
+    position: absolute;
+    bottom: -15px;
+    right: 10px;
+    text-shadow: 1px 1px 2px black;
+    background-color: black;
+    opacity: 0.8;
+}
+
+.rival-money mat-icon, .rival-clothes mat-icon, .you-stats mat-icon {
+    vertical-align: bottom;
+}
+
+.you-container {
+    width: 20vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat {
+    padding: 0 5px;
+    height: 50vh;
+    border-bottom: 2px solid #222;
+    overflow-y: auto;
+}
+
+.chat p {
+    margin: 5px 0;
+}
+
+.game-stats {
+    color: #FF0;
+    height: 5vh;
+    background-color: #222222;
+}
+
+.bid-buttons, .action-buttons, .cheat-buttons, .game-stats {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.bid-buttons {
+    margin-top: 5px;
+}
+
+.progress-button {
+    margin: 10px 10px;
+}
+
+.you-stats {
+    padding: 5px 0;
+    color: #ccc;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.my-cards {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 5px;
+}
+
+.my-card {
+    width: 70px;
+    height: 100px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.discarded {
+    opacity: 0.2;
+}

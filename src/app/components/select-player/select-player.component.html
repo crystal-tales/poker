@@ -1,0 +1,33 @@
+<mat-toolbar color="primary" class="app-toolbar mat-elevation-z4">
+    <h3>Select 4 opponents:</h3>
+    <span class="select-container">
+        <mat-chip color="accent" *ngFor="let selection of selectedPlayers" (click)="select(selection)">{{selection}}</mat-chip>
+    </span>
+
+    <button mat-flat-button (click)="random()" color="primary" class="negrita margin-r-20">
+        Random rivals
+        <mat-icon>cached</mat-icon>
+    </button>
+    <button mat-raised-button (click)="startGame()" color="accent" class="negrita margin-r-20" [disabled]="selectedPlayers.length===0">
+        Start Game
+        <mat-icon>web_stories</mat-icon>
+    </button>
+    <button mat-icon-button (click)="uploadImages()" color="accent" matTooltip="Create rival">
+        <mat-icon>upload</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div class="grid-content">
+    <mat-grid-list cols="8" rowHeight="1:1" gutterSize="15px" class="player-list">
+        <mat-grid-tile
+                class="player-tile"
+                [class.selected]="selected(player)"
+                (click)="select(player)"
+                *ngFor="let player of playerList"
+                [colspan]="1"
+                [rowspan]="1"
+                [style.background-image]="getImg(player)">
+            <p class="player-name">{{player}}</p>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

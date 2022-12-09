@@ -1,0 +1,58 @@
+.select-container {
+    flex: 1 1 auto;
+    margin: 0 20px;
+}
+
+.select-container mat-chip {
+    margin-left: 20px;
+}
+
+.app-toolbar {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.grid-content {
+    padding: 0 20px 20px 10px;
+    overflow: auto;
+    height: -webkit-fill-available;
+    background-color: black;
+}
+
+.player-list {
+    margin-top: 75px;
+}
+
+.player-tile {
+    background-position: center;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 4px solid black;
+    opacity: .5;
+}
+
+.player-tile:hover {
+    cursor: pointer;
+    border-color: red;
+}
+
+.player-tile.selected {
+    border-color: goldenrod !important;
+    opacity: 1;
+}
+
+.player-name {
+    position: absolute;
+    bottom: -15px;
+    letter-spacing: 1px;
+    color: whitesmoke;
+    text-shadow: 1px 1px 2px black;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.margin-r-20 {
+    margin-right: 20px;
+}
