@@ -56,7 +56,7 @@ class Player {
             '7218-7492': {action: 'fold', extras: ''}
         }
     };
-    _strategyFarol: { 1: 1, 2: 10, 3: 20 };
+    _strategyFarol = {1: 1, 2: 10, 3: 20};
 
     constructor(name) {
         this._name = name;
