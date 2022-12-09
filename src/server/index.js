@@ -17,11 +17,13 @@ if (!debug) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(helmet({
-    crossOriginResourcePolicy: false
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false
 }));
 app.use(cors());
 
 app.use(express.static(join(root, 'src/assets/')));
+app.use(express.static(join(root, 'dist/poker/')));
 
 app.use('/api', routes);
 

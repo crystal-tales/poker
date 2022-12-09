@@ -227,6 +227,7 @@ class Player {
             this._firstStage = this._currentStage;
             this._leftStages = this._currentStage;
         }
+        console.debug('Creado rival ' + this._name + ' con estrategia ' + this._strategy);
     }
 
     estimatedMoney() {

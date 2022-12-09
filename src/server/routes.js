@@ -26,6 +26,13 @@ const upload = multer({storage: storage});
 // Lista de jugadores disponibles
 router.get('/players', (req, res) => {
     const folders = readdirSync(__dirname + '/../assets/players/');
+    let idx;
+    folders.forEach((f, index) => {
+        if (f === 'readme.md') {
+            idx = index;
+        }
+    });
+    folders.splice(idx, 1);
     res.json({players: folders});
 });
 

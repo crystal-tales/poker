@@ -256,7 +256,6 @@ class Game {
         const actionToTake = this.decideIAAction(player, evaluation);
         player._decision[this._currentStep] = actionToTake.action;
 
-        console.debug('[EIA] ' + player.name + ' decide ' + JSON.stringify(actionToTake));
         switch (actionToTake.action) {
             case 'discard':
                 const discarded = player.iaDiscardCards(evaluation);
