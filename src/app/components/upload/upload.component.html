@@ -30,7 +30,7 @@
                     <mat-label>Name</mat-label>
                     <input type="text" matInput [(ngModel)]="name" required (input)="alphaNumberOnly($event)" (paste)="onPaste($event)">
                     <mat-icon matSuffix color="primary">woman</mat-icon>
-                    <mat-hint class="text">Name of the rival to add</mat-hint>
+                    <mat-hint class="text">Name of the rival to add (only allowed alphanumeric characters and blanks)</mat-hint>
                 </mat-form-field>
             </div>
 

@@ -31,7 +31,7 @@ app.get('*', (req, res) => {
     res.sendFile('dist/poker/index.html', {root});
 });
 
-app.listen(port, () => console.log('API running on localhost:' + port));
+app.listen(port, () => console.log('Game running on http://localhost:' + port));
 
 /*
 

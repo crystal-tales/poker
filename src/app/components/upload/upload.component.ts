@@ -75,12 +75,16 @@ export class UploadComponent {
         if (regex.test(str)) {
             return true;
         }
-
         e.preventDefault();
         return false;
     }
 
     onPaste(e: any) {
+        const regex = new RegExp('^[a-zA-Z0-9 ]+$');
+        const paste = e.clipboardData.getData('text');
+        if (regex.test(paste)) {
+            return true;
+        }
         e.preventDefault();
         return false;
     }

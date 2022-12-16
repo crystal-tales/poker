@@ -5,8 +5,8 @@
                     class="rival-tile"
                     (click)="changeImg(rival)"
                     *ngFor="let rival of rivals"
-                    [colspan]="1"
-                    [rowspan]="1"
+                    [colspan]="getCols()"
+                    [rowspan]="getRows()"
                     [style.color]="rival.color"
                     [style.background-image]="getImg(rival)"
                     [style.background-color]="getBackgroundColor(rival)">
@@ -30,7 +30,7 @@
                     *ngFor="let resto of restRivals()"
                     [colspan]="1"
                     [rowspan]="1">
-                <button mat-raised-button color="accent" (click)="addRival()">Add rival</button>
+                <button mat-raised-button color="accent" [disabled]="game.currentStep !== 0" (click)="addRival()">Add rival</button>
             </mat-grid-tile>
         </mat-grid-list>
     </div>
@@ -40,10 +40,15 @@
             <p *ngFor="let chat of chats"
                [style.color]="getChatColor(chat)"
                [style.font-style]="getChatStyle(chat)"
-               [style.text-align]="getChatAlign(chat)">{{chat.who | titlecase }}: {{chat.msg}}</p>
+               [style.text-align]="getChatAlign(chat)">
+                <span *ngIf="chat.who !== '#separator' || chat.who !== '#system'">{{chat.who | titlecase }}: </span>{{chat.msg}}
+            </p>
         </div>
 
         <div class="game-stats">
+            <button mat-icon-button color="accent" matTooltip="Add rival" *ngIf="rivals.length < 4" [disabled]="game.currentStep !== 0" (click)="addRival()">
+                <mat-icon>add</mat-icon>
+            </button>
             <span>Pot: {{game.pot}}</span>
             <span>To you: {{you.toYou}}</span>
         </div>
@@ -107,17 +112,18 @@
         </div>
 
         <div class="cheat-buttons" [class.ocultar]="game.currentStep === 0 || endGame">
-            <button [disabled]="!canCheat(1) || loading" color="warn" (click)="cheatShowCards()" mat-stroked-button matTooltip="Show rival cards"
+            <button [disabled]="!canCheat(1) || loading" color="warn" (click)="cheatShowCards()" mat-stroked-button matTooltip="Show rival cards this hand"
                     matTooltipShowDelay="1000">
                 <mat-icon>visibility</mat-icon>
                 25
             </button>
-            <button [disabled]="!canCheat(2) || loading" color="warn" (click)="cheatCannotFold()" mat-stroked-button matTooltip="Cannot fold"
+            <button [disabled]="!canCheat(2) || loading" color="warn" (click)="cheatCannotFold()" mat-stroked-button matTooltip="Rivals can`t fold this hand"
                     matTooltipShowDelay="1000">
                 <mat-icon>open_in_new_off</mat-icon>
                 50
             </button>
-            <button [disabled]="!canCheat(3) || loading" color="warn" (click)="cheatWinningHand()" mat-stroked-button matTooltip="Winning hand"
+            <button [disabled]="!canCheat(3) || loading" color="warn" (click)="cheatWinningHand()" mat-stroked-button
+                    matTooltip="You will win this hand for sure"
                     matTooltipShowDelay="1000">
                 <mat-icon>emoji_events</mat-icon>
                 100

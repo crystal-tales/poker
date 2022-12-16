@@ -63,7 +63,7 @@ export class GameComponent implements OnInit {
             next: (response: any) => {
                 this.saveGameData(response).then(() => {
                     if (first) {
-                        this.chats.push({who: 'system', msg: 'Player starting: ' + this.game.currentPlayer});
+                        this.chats.push({who: '#system', msg: 'Player starting: ' + this.game.currentPlayer});
                     }
                 });
             },
@@ -188,8 +188,11 @@ export class GameComponent implements OnInit {
             if (r.name === chat.who) {
                 color = r.color;
             }
-            if (chat.who === 'system') {
+            if (chat.who === '#system') {
                 color = '#FF0';
+            }
+            if (chat.who === '#separator') {
+                color = '#444444';
             }
         });
 
@@ -197,7 +200,7 @@ export class GameComponent implements OnInit {
     }
 
     getChatStyle(chat: any) {
-        if (chat.who === 'system') {
+        if (chat.who === '#system' || chat.who === '#separator') {
             return 'italic';
         } else {
             return 'normal';
@@ -205,8 +208,10 @@ export class GameComponent implements OnInit {
     }
 
     getChatAlign(chat: any) {
-        if (chat.who === 'system') {
+        if (chat.who === '#system') {
             return 'right';
+        } else if (chat.who === '#separator') {
+            return 'center';
         } else {
             return 'left';
         }
@@ -230,7 +235,11 @@ export class GameComponent implements OnInit {
     }
 
     restRivals() {
-        return Array(4 - this.rivals.length).fill('');
+        if (this.rivals.length > 2) {
+            return Array(4 - this.rivals.length).fill('');
+        } else {
+            return [];
+        }
     }
 
     canBid(amount: number) {
@@ -391,5 +400,21 @@ export class GameComponent implements OnInit {
 
     addRival() {
         // TODO
+    }
+
+    getCols() {
+        if (this.rivals.length === 1) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    getRows() {
+        if (this.rivals.length === 1 || this.rivals.length === 2) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 }

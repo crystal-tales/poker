@@ -150,6 +150,7 @@ class Game {
             this._startingPlayer = this.nextPlayer(this._startingPlayer);
             this._currentPlayer = this._startingPlayer;
         }
+        actions.push({who: '#separator', msg: '----------'});
         console.debug('Turno nuevo, empieza: ' + this._startingPlayer);
 
         // Reseteo ver cartas y los trucos
@@ -158,31 +159,33 @@ class Game {
         if (!keepPot) {
             this._pot = 0;
         }
-        this.cheatWinHand = false;
+        this._cheatWinHand = false;
 
         // Reinicio el mazo y barajo
         this._deck.create();
-        actions.push({who: 'system', msg: 'Dealing new cards...'});
+        actions.push({who: '#system', msg: 'Dealing new cards...'});
         // Reparto 5 cartas y ponog el pot inicial de 5
         this._players.forEach(player => {
-            player.toYou = 0;
-            player.hasFolded = false;
-            player.resetDecision();
+            if (!player.ko) {
+                player.toYou = 0;
+                player.hasFolded = false;
+                player.resetDecision();
 
-            player.emptyHand();
-            for (let i = 1; i <= 5; i++) {
-                // Cojo carta del mazo
-                const card = this._deck.draw();
-                // Se la doy al jugador
-                player.drawCard(card);
-            }
+                player.emptyHand();
+                for (let i = 1; i <= 5; i++) {
+                    // Cojo carta del mazo
+                    const card = this._deck.draw();
+                    // Se la doy al jugador
+                    player.drawCard(card);
+                }
 
-            // Poteo
-            const resPot = player.bidOrCall(5);
-            if (resPot > 0) {
-                actions.push({who: player.name, msg: 'I bet 1 cloth to pay the initial pot.'});
+                // Poteo
+                const resPot = player.bidOrCall(5);
+                if (resPot > 0) {
+                    actions.push({who: player.name, msg: 'I bet 1 cloth to pay the initial pot.'});
+                }
+                this._pot += 5;
             }
-            this._pot += 5;
         });
 
         // Avanzo el juego al siguiente paso
@@ -239,6 +242,7 @@ class Game {
             final = acts.final;
         }
 
+        console.debug('[IA] Acciones IA: ' + JSON.stringify({actions: actions, final: final}));
         return {actions: actions, final: final};
     }
 
@@ -268,21 +272,22 @@ class Game {
                 check = this.checkIfAll('stay');
                 if (check.all) {
                     console.debug('[EIA] ' + player.name + ' todos stay');
-                    actions.push({who: 'system', msg: 'All players stay. The pot is kept.'});
+                    actions.push({who: '#system', msg: 'All players stay. The pot is kept.'});
                     // Inicio turno nuevo sin resetear el pot
                     // TODO comprobar si he reseteado todo lo necesario, decisions y demás cosas, reparto de mano...
                     const r = this.newTurn(true);
-                    actions.concat(r);
+                    actions = actions.concat(r);
                     return {actions: actions, final: null};
                 }
                 break;
             case 'fold':
                 player.hasFolded = true;
+                player.fold(this._currentStep);
                 actions.push({who: player.name, msg: 'I fold.'});
                 check = this.checkIfAll('fold');
                 if (check.all) {
                     console.debug('[EIA] ' + player.name + ' todos fold, paso a 8.');
-                    actions.push({who: 'system', msg: 'All players but ' + check.whoDontFold + ' fold.'});
+                    actions.push({who: '#system', msg: 'All players but ' + check.whoDontFold + ' fold.'});
                     // Paso directamente a la fase de comprobar ganadores, que será solo uno
                     this._currentStep = 8;
                     directTo8 = true;
@@ -301,7 +306,7 @@ class Game {
                 check = this.checkIfAll('call');
                 if (check.all) {
                     console.debug('[EIA] ' + player.name + ' todos call...');
-                    actions.push({who: 'system', msg: 'All players call.'});
+                    actions.push({who: '#system', msg: 'All players call.'});
                     // Paso directamente a la fase de descarte o la final, según esté en una u otra
                     if (this._currentStep === 1 || this._currentStep === 2) {
                         this._currentStep = 4;
@@ -407,19 +412,20 @@ class Game {
                 actions.push({who: you.name, msg: 'I stay.'});
                 check = this.checkIfAll('stay');
                 if (check.all) {
-                    actions.push({who: 'system', msg: 'All players stay. The pot is kept.'});
+                    actions.push({who: '#system', msg: 'All players stay. The pot is kept.'});
                     // Inicio turno nuevo sin resetear el pot
                     const r = this.newTurn(true);
-                    actions.concat(r);
+                    actions = actions.concat(r);
                     return {actions: actions, final: null};
                 }
                 break;
             case 'fold':
                 you.hasFolded = true;
+                you.fold(this._currentStep);
                 actions.push({who: you.name, msg: 'I fold.'});
                 check = this.checkIfAll('fold');
                 if (check.all) {
-                    actions.push({who: 'system', msg: 'All players but ' + check.whoDontFold + ' fold. The pot is kept for the next game.'});
+                    actions.push({who: '#system', msg: 'All players but ' + check.whoDontFold + ' fold. The pot is kept for the next game.'});
                     // Paso directamente a la fase de comprobar ganadores, que será solo uno
                     this._currentStep = 8;
                     directTo8 = true;
@@ -437,7 +443,7 @@ class Game {
 
                 check = this.checkIfAll('call');
                 if (check.all) {
-                    actions.push({who: 'system', msg: 'All players call.'});
+                    actions.push({who: '#system', msg: 'All players call.'});
                     // Paso directamente a la fase de descarte o la final, según esté en una u otra
                     if (this._currentStep === 1 || this._currentStep === 2) {
                         this._currentStep = 4;
@@ -477,10 +483,26 @@ class Game {
 
         // Si el siguiente jugador no es humano, le doy paso a la IA
         if (this._currentPlayer !== 'you') {
+            console.debug('[HUMAN] Doy paso a la IA: ' + JSON.stringify(actions));
             return this.iaActions(actions);
         } else {
+            console.debug('[HUMAN] Acciones humanas: ' + JSON.stringify({actions: actions, final: acts.final}));
             return {actions: actions, final: acts.final};
         }
+    }
+
+    /**
+     * Comprueba si un step ha finalizado, que es cuando todos han decidido una acción
+     */
+    isStepFinished() {
+        let is = true;
+        this._players.forEach(p => {
+            // Si alguno no ha decidido aún, no hemos terminado
+            if (p.decision[this._currentStep] === null) {
+                is = false;
+            }
+        });
+        return is;
     }
 
     /**
@@ -493,9 +515,9 @@ class Game {
         this._currentPlayer = this.nextPlayer(this._currentPlayer);
         console.debug('[FIN] Siguiente jugador: ' + this._currentPlayer);
 
-        // Siguiente Step, si se ha terminado el previo ya (cuando vuelve al jugador inicial).
+        // Siguiente Step, si se ha terminado el previo ya
         // Si no vengo directo a 4 u 8 de que todos hagan call/fold
-        if (!directTo4 && !directTo8 && (this._currentPlayer === this._startingPlayer)) {
+        if (!directTo4 && !directTo8 && this.isStepFinished()) {
             this.nextStep();
         }
 
@@ -530,17 +552,19 @@ class Game {
             }
             if (win.winners.length === 1) {
                 let cheto = this._cheatWinHand ? ' (cheating)' : '';
-                actions.push({who: 'system', msg: win.winners[0] + ' wins' + cheto + '. Pot: ' + this._pot});
+                actions.push({who: '#system', msg: win.winners[0] + ' wins' + cheto + '. Pot: ' + this._pot});
             } else {
-                actions.push({who: 'system', msg: 'There is a tie between ' + win.winners.join(', ') + '. Pot distributed: ' + this._pot});
+                actions.push({who: '#system', msg: 'There is a tie between ' + win.winners.join(', ') + '. Pot distributed: ' + this._pot});
             }
 
             // Pagamos deudas y damos premios
             const resT = this.resolveTurn(win);
             console.debug('[WIN] Resolución de turno: ' + JSON.stringify(resT));
-            actions.concat(resT.actions);
+            actions = actions.concat(resT.actions);
             final = resT.final;
         }
+
+        console.debug('[FIN] FinalizeActions: ' + JSON.stringify({actions: actions, final: final}));
         return {
             actions: actions,
             final: final

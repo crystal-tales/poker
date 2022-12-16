@@ -246,6 +246,13 @@ class Player {
         this._hand = [];
     }
 
+    fold(step) {
+        // Marco todas sus decisiones de aquí al final como fold
+        for (let i = step; i <= 7; i++) {
+            this._decision[i] = 'fold';
+        }
+    }
+
     // El amount será el bid + toYou si es bid, y sólo toYou si es call
     bidOrCall(amount) {
         console.debug('[BID-CALL] ' + this._name + ' apuesta o call: ' + amount);
@@ -324,9 +331,11 @@ class Player {
             this._leftStages = this._currentStage;
         }
 
-        // Si no tengo más stages y tengo dinero 0 o negativo, he perdido
-        if (this._money <= 0 && this._leftStages <= 0) {
+        // Si no tengo más stages, he perdido
+        if (this._leftStages <= 0) {
             this._ko = true;
+            this._leftStages = 0;
+            this._money = 0;
             console.debug('[PayDebts]' + this._name + ' ha perdido.');
         }
 
