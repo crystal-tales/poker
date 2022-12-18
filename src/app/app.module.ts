@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +20,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DragDropDirective } from './components/drag-drop.directive';
-import { GameComponent } from './components/game/game.component';
+import { ConfirmDialog, GameComponent } from './components/game/game.component';
 import { SelectPlayerComponent } from './components/select-player/select-player.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { SortHandPipe } from './services/sort-hand.pipe';
@@ -31,7 +32,8 @@ import { SortHandPipe } from './services/sort-hand.pipe';
         GameComponent,
         SortHandPipe,
         UploadComponent,
-        DragDropDirective
+        DragDropDirective,
+        ConfirmDialog
     ],
     imports: [
         BrowserModule,
@@ -50,7 +52,8 @@ import { SortHandPipe } from './services/sort-hand.pipe';
         DragDropModule,
         MatFormFieldModule,
         MatInputModule,
-        FormsModule
+        FormsModule,
+        MatDialogModule
     ],
     providers: [],
     bootstrap: [AppComponent]

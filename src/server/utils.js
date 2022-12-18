@@ -74,4 +74,16 @@ const capitalizeFirstLetter = function (string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export default {saveImages, capitalizeFirstLetter};
+const listRivalsAvailable = function () {
+    const folders = readdirSync(__dirname + '/../assets/players/');
+    let idx;
+    folders.forEach((f, index) => {
+        if (f === 'readme.md') {
+            idx = index;
+        }
+    });
+    folders.splice(idx, 1);
+    return folders;
+};
+
+export default {saveImages, capitalizeFirstLetter, listRivalsAvailable};

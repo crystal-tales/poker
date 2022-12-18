@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../services/api.service';
@@ -26,7 +27,7 @@ export class GameComponent implements OnInit {
     endGame = false;
     winnerYou = false;
 
-    constructor(private apiService: ApiService, private toast: ToastrService, private router: Router) {
+    constructor(private apiService: ApiService, private toast: ToastrService, private router: Router, public dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -92,17 +93,24 @@ export class GameComponent implements OnInit {
         }
         // console.log(rival);
         const theImg = rival['imagesSet'][rival['currentStage']][this.currentImgs[rival['name']]];
+        if (theImg === undefined) {
+            console.debug('IMG undefined:');
+            console.debug(rival);
+            console.debug(this.currentImgs);
+        }
         return 'url("http://localhost:7777/players/' + rival['name'] + '/' + theImg + '")';
     }
 
     getBackgroundColor(rival: any) {
         const img = rival['imagesSet'][rival['currentStage']][this.currentImgs[rival['name']]];
-
-        if (isNaN(parseInt(img.charAt(0)))) {
-            return '#404040';
-        } else {
-            return 'black';
+        let color = 'black';
+        try {
+            if (isNaN(parseInt(img.charAt(0)))) {
+                color = '#404040';
+            }
+        } catch (e) {
         }
+        return color;
     }
 
     // Reparto inicial de cartas
@@ -398,8 +406,16 @@ export class GameComponent implements OnInit {
         this.router.navigate(['/']).catch(e => {console.error(e);});
     }
 
-    addRival() {
-        // TODO
+    addRival(out: string = '') {
+        this.apiService.addRival(out).subscribe({
+            next: (response: any) => {
+                if (response.error !== false) {
+                    this.toast.error(response.error);
+                }
+                this.saveGameData(response).then();
+            },
+            error: (err: Error) => this.toast.error(err.toString())
+        });
     }
 
     getCols() {
@@ -417,4 +433,21 @@ export class GameComponent implements OnInit {
             return 1;
         }
     }
+
+    return() {
+        const dialogRef = this.dialog.open(ConfirmDialog);
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.newGame();
+            }
+        });
+    }
+}
+
+@Component({
+    selector: 'confirm-dialog',
+    templateUrl: 'confirm-dialog.html'
+})
+export class ConfirmDialog {
 }

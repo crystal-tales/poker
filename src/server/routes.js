@@ -1,7 +1,6 @@
 import express from 'express';
 import {fileURLToPath} from 'node:url';
 import {dirname} from 'node:path';
-import {readdirSync} from 'node:fs';
 import multer from 'multer';
 import Game from './classes/game.js';
 import utils from './utils.js';
@@ -25,14 +24,7 @@ const upload = multer({storage: storage});
 
 // Lista de jugadores disponibles
 router.get('/players', (req, res) => {
-    const folders = readdirSync(__dirname + '/../assets/players/');
-    let idx;
-    folders.forEach((f, index) => {
-        if (f === 'readme.md') {
-            idx = index;
-        }
-    });
-    folders.splice(idx, 1);
+    const folders = utils.listRivalsAvailable();
     res.json({players: folders});
 });
 
@@ -89,11 +81,21 @@ router.post('/game', (req, res) => {
     game = new Game(req.body.players);
     res.json({data: game.json()});
 });
-// Prepara el siguiente turno al finalizar el anterior
-/*router.post('/game/prepare-turn', (req, res) => {
-    game.currentStep = 0;
-    res.json({data: game.json()});
-});*/
+
+// Añadimos rivales
+router.post('/game/new-player/:player?', (req, res) => {
+    let param = null, err = false;
+    if (req.params.player) {
+        param = req.params.player;
+    }
+    const r = game.addPlayer(param);
+    if (r === false) {
+        err = 'Can`t add more rivals';
+    } else if (r === null) {
+        err = 'No more rivals available';
+    }
+    res.json({data: game.json(), error: err});
+});
 
 // Reparto inicial de cartas en un turno para todos los jugadores
 router.post('/game/new-turn', (req, res) => {

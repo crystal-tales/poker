@@ -23,6 +23,11 @@
                 <div class="rival-cards" [class.ocultar]="!game.showCards">
                     <div class="rival-card" *ngFor="let card of rival.hand | sortHand" [style.background-image]="getCardImg(card.image)"></div>
                 </div>
+                <div class="rival-add-button">
+                    <button mat-raised-button color="accent" [class.ocultar]="game.currentStep !== 0 || !rival.ko" (click)="addRival(rival.name)">
+                        Change this rival
+                    </button>
+                </div>
             </mat-grid-tile>
 
             <mat-grid-tile
@@ -41,7 +46,7 @@
                [style.color]="getChatColor(chat)"
                [style.font-style]="getChatStyle(chat)"
                [style.text-align]="getChatAlign(chat)">
-                <span *ngIf="chat.who !== '#separator' || chat.who !== '#system'">{{chat.who | titlecase }}: </span>{{chat.msg}}
+                <span *ngIf="chat.who !== '#separator' && chat.who !== '#system'">{{chat.who | titlecase }}: </span>{{chat.msg}}
             </p>
         </div>
 
@@ -51,6 +56,9 @@
             </button>
             <span>Pot: {{game.pot}}</span>
             <span>To you: {{you.toYou}}</span>
+            <button mat-icon-button color="warn" matTooltip="Exit game" (click)="return()">
+                <mat-icon>logout</mat-icon>
+            </button>
         </div>
 
         <div class="you-stats">
@@ -98,11 +106,11 @@
         </div>
 
         <div class="bid-buttons" [class.ocultar]="game.currentStep === 0 || endGame">
+            <button [disabled]="!canBid(1) || loading" color="accent" (click)="bidAction(1)" mat-icon-button>1</button>
+            <button [disabled]="!canBid(2) || loading" color="accent" (click)="bidAction(2)" mat-icon-button>2</button>
             <button [disabled]="!canBid(5) || loading" color="accent" (click)="bidAction(5)" mat-icon-button>5</button>
             <button [disabled]="!canBid(10) || loading" color="accent" (click)="bidAction(10)" mat-icon-button>10</button>
             <button [disabled]="!canBid(15) || loading" color="accent" (click)="bidAction(15)" mat-icon-button>15</button>
-            <button [disabled]="!canBid(20) || loading" color="accent" (click)="bidAction(20)" mat-icon-button>20</button>
-            <button [disabled]="!canBid(25) || loading" color="accent" (click)="bidAction(25)" mat-icon-button>25</button>
         </div>
 
         <div class="my-cards" [class.ocultar]="game.currentStep === 0 || endGame">

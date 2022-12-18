@@ -29,29 +29,29 @@ class Player {
     _hasFolded = false;
     _strategyMatrixByRank = {
         1: {
-            '1-70': {action: 'bid', extras: 25},
-            '71-226': {action: 'bid', extras: 20},
-            '227-815': {action: 'bid', extras: 15},
-            '816-1604': {action: 'bid', extras: 10},
-            '1605-1939': {action: 'bid', extras: 5},
+            '1-70': {action: 'bid', extras: 15},
+            '71-226': {action: 'bid', extras: 10},
+            '227-815': {action: 'bid', extras: 5},
+            '816-1604': {action: 'bid', extras: 2},
+            '1605-1939': {action: 'bid', extras: 1},
             '1940-2929': {action: 'call', extras: ''},
             '2930-7492': {action: 'fold', extras: ''}
         },
         2: {
-            '1-166': {action: 'bid', extras: 25},
-            '167-322': {action: 'bid', extras: 20},
-            '323-1604': {action: 'bid', extras: 15},
-            '1605-1939': {action: 'bid', extras: 10},
-            '1940-2929': {action: 'bid', extras: 5},
+            '1-166': {action: 'bid', extras: 15},
+            '167-322': {action: 'bid', extras: 10},
+            '323-1604': {action: 'bid', extras: 5},
+            '1605-1939': {action: 'bid', extras: 2},
+            '1940-2929': {action: 'bid', extras: 1},
             '2930-6185': {action: 'call', extras: ''},
             '6186-7492': {action: 'fold', extras: ''}
         },
         3: {
-            '1-1599': {action: 'bid', extras: 25},
-            '1600-2467': {action: 'bid', extras: 20},
-            '2468-2929': {action: 'bid', extras: 15},
-            '2930-3325': {action: 'bid', extras: 10},
-            '3326-4205': {action: 'bid', extras: 5},
+            '1-1599': {action: 'bid', extras: 15},
+            '1600-2467': {action: 'bid', extras: 10},
+            '2468-2929': {action: 'bid', extras: 5},
+            '2930-3325': {action: 'bid', extras: 2},
+            '3326-4205': {action: 'bid', extras: 1},
             '4206-7217': {action: 'call', extras: ''},
             '7218-7492': {action: 'fold', extras: ''}
         }
@@ -566,12 +566,6 @@ class Player {
         // Miro a ver si mi decisión está permitida o no. Si no lo está, paso a la siguiente en cascada hasta encontrar una válida
         let maxDecision;
         switch (decisionTemp.action + decisionTemp.extras) {
-            case 'bid25':
-                maxDecision = {action: 'bid', extras: 25};
-                if (options.bid25) break;
-            case 'bid20':
-                maxDecision = {action: 'bid', extras: 20};
-                if (options.bid20) break;
             case 'bid15':
                 maxDecision = {action: 'bid', extras: 15};
                 if (options.bid15) break;
@@ -581,6 +575,12 @@ class Player {
             case 'bid5':
                 maxDecision = {action: 'bid', extras: 5};
                 if (options.bid5) break;
+            case 'bid2':
+                maxDecision = {action: 'bid', extras: 2};
+                if (options.bid2) break;
+            case 'bid1':
+                maxDecision = {action: 'bid', extras: 1};
+                if (options.bid1) break;
             // Con call, puede ser stay o call
             case 'call':
                 maxDecision = {action: 'stay', extras: ''};

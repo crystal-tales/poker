@@ -1,10 +1,10 @@
 import Deck from './deck.js';
 import Player from './player.js';
+import utils from '../utils.js';
 
 const bidSteps = [1, 2, 5, 6];
 const callSteps = [1, 2, 3, 5, 6, 7];
 const foldSteps = [1, 2, 3, 5, 6, 7];
-
 
 class Game {
     _players = [];
@@ -17,12 +17,14 @@ class Game {
     _showCards = false;
     _cheatCannotFold = false;
     _cheatWinHand = false;
+    _usedPlayers = [];
 
     constructor(players) {
         this._deck = new Deck();
         this._players.push(new Player('you'));
         players.forEach(ply => {
             this._players.push(new Player(ply));
+            this._usedPlayers.push(ply);
         });
 
         // Random starter
@@ -104,6 +106,46 @@ class Game {
         return pl;
     }
 
+    getRandomNewPlayer() {
+        let selected = null;
+        const listRivals = utils.listRivalsAvailable();
+        while (selected === null && (this._usedPlayers.length < listRivals.length)) {
+            const item = listRivals[Math.floor(Math.random() * listRivals.length)];
+            if (!this._usedPlayers.includes(item)) {
+                selected = item;
+            }
+        }
+        return selected;
+    }
+
+    /**
+     * @returns {null|boolean} truesi se ha agredado, false si no había hueco libre, null si no hay más rivales disponibles
+     */
+    addPlayer(playerOut = null) {
+        const np = this.getRandomNewPlayer();
+        if (np === null) {
+            return null;
+        }
+
+        if (playerOut === null) {
+            // Si no sustituyo a nadie y no hay hueco, fuera
+            if (this._players.length === 5) {
+                return false;
+            }
+            // Creo un nuevo rival el último de la lista, si hay huecos
+            this._players.push(new Player(np));
+        } else {
+            // pongo al jugador en la posición del jugador sustituido
+            this._players.forEach((p, idx) => {
+                if (p.name === playerOut) {
+                    this._players[idx] = new Player(np);
+                }
+            });
+        }
+        this._usedPlayers.push(np);
+        return true;
+    }
+
     json() {
         let plys = [], you;
         this._players.forEach(ply => {
@@ -123,11 +165,11 @@ class Game {
                 possibleYouActions: {
                     stay: this.canStay('you'),
                     call: this.canCall('you'),
+                    bid1: this.canBid('you', 1),
+                    bid2: this.canBid('you', 2),
                     bid5: this.canBid('you', 5),
                     bid10: this.canBid('you', 10),
                     bid15: this.canBid('you', 15),
-                    bid20: this.canBid('you', 20),
-                    bid25: this.canBid('you', 25),
                     fold: this.canFold('you'),
                     discard: this.canDiscard(),
                     cheat1: this.canCheat(25),
@@ -150,7 +192,7 @@ class Game {
             this._startingPlayer = this.nextPlayer(this._startingPlayer);
             this._currentPlayer = this._startingPlayer;
         }
-        actions.push({who: '#separator', msg: '----------'});
+        actions.push({who: '#separator', msg: '- - - - - - - - - -'});
         console.debug('Turno nuevo, empieza: ' + this._startingPlayer);
 
         // Reseteo ver cartas y los trucos
@@ -164,7 +206,7 @@ class Game {
         // Reinicio el mazo y barajo
         this._deck.create();
         actions.push({who: '#system', msg: 'Dealing new cards...'});
-        // Reparto 5 cartas y ponog el pot inicial de 5
+        // Reparto 5 cartas y pongo el pot inicial de 5
         this._players.forEach(player => {
             if (!player.ko) {
                 player.toYou = 0;
@@ -189,7 +231,7 @@ class Game {
         });
 
         // Avanzo el juego al siguiente paso
-        this.nextStep();
+        actions = this.nextStep(actions);
         return actions;
     }
 
@@ -219,13 +261,15 @@ class Game {
         }
     }
 
-    nextStep() {
+    nextStep(actions) {
+        actions.push({who: '#separator', msg: '- - - - - - - - - -'});
         console.debug(':::::::::: [FIN] Voy a pasar del step: ' + this._currentStep);
         this._currentStep++;
         if (this._currentStep > 8) {
             this._currentStep = 0;
         }
         console.debug(':::::::::: [FIN] al siguiente step: ' + this._currentStep);
+        return actions;
     }
 
     // Ejecuta acciones de IA hasta que le vuelve a tocar al humano
@@ -359,11 +403,11 @@ class Game {
         const options = {
             stay: this.canStay(player.name),
             call: this.canCall(player.name),
+            bid1: this.canBid(player.name, 1),
+            bid2: this.canBid(player.name, 2),
             bid5: this.canBid(player.name, 5),
             bid10: this.canBid(player.name, 10),
             bid15: this.canBid(player.name, 15),
-            bid20: this.canBid(player.name, 20),
-            bid25: this.canBid(player.name, 25),
             fold: this.canFold(player.name),
             discard: this.canDiscard()
         };
@@ -518,7 +562,7 @@ class Game {
         // Siguiente Step, si se ha terminado el previo ya
         // Si no vengo directo a 4 u 8 de que todos hagan call/fold
         if (!directTo4 && !directTo8 && this.isStepFinished()) {
-            this.nextStep();
+            actions = this.nextStep(actions);
         }
 
         // Si el siguiente es descarte de cartas, pongo al humano primero -> Da errores cambiar el orden
@@ -536,7 +580,7 @@ class Game {
             // Pongo el usuario en you ya que será quien controle el botón de continuar (que será el Deal que hará un newTurn)
             this._currentPlayer = 'you';
             // El siguiente step, para dejarlo en 0
-            this.nextStep();
+            actions = this.nextStep(actions);
 
             // Evaluamos ganador
             const win = this.evalWinner();
@@ -552,7 +596,13 @@ class Game {
             }
             if (win.winners.length === 1) {
                 let cheto = this._cheatWinHand ? ' (cheating)' : '';
-                actions.push({who: '#system', msg: win.winners[0] + ' wins' + cheto + '. Pot: ' + this._pot});
+                let txt = '';
+                if (win.winners[0] === 'you') {
+                    txt = 'You win';
+                } else {
+                    txt = win.winners[0] + ' wins';
+                }
+                actions.push({who: '#system', msg: txt + cheto + '. Pot: ' + this._pot});
             } else {
                 actions.push({who: '#system', msg: 'There is a tie between ' + win.winners.join(', ') + '. Pot distributed: ' + this._pot});
             }
@@ -575,7 +625,7 @@ class Game {
         let winners = [], hands = [], ranks = [];
         // Evalúo manos
         this._players.forEach(p => {
-            if (!p.hasFolded) {
+            if (!p.hasFolded && !p.ko) {
                 const evl = p.evalHand();
                 hands.push({name: p.name, rank: evl.rank, text: evl.text});
                 ranks.push(evl.rank);
@@ -716,23 +766,29 @@ class Game {
      * @param action Para stay miro si todos stay, para call todos call, para fold todos menos uno
      */
     checkIfAll(action) {
-        let count = 0, dontFold;
+        let count = 0, dontFold, countKO = 0;
         this._players.forEach(p => {
-            if (p.decision[this._currentStep] === action) {
+            if (p.ko) countKO++;
+
+            // Excluyo a los KO
+            if (!p.ko && p.decision[this._currentStep] === action) {
                 count++;
-            } else if (action === 'fold') {
+            }
+
+            if (!p.ko && p.decision[this._currentStep] !== action && action === 'fold') {
                 dontFold = p.name;
             }
         });
 
-        let result = false;
+        let result = false, countAllActivePlayers = this._players.length - countKO;
         switch (action) {
             case'stay':
             case'call':
-                if (count === this._players.length) result = true;
+                if (count === countAllActivePlayers) result = true;
                 break;
             case'fold':
-                if (count === (this._players.length - 1)) result = true;
+                // Aquí es todos fold menos uno que será el que gane
+                if (count === (countAllActivePlayers - 1)) result = true;
                 break;
         }
         return {all: result, whoDontFold: dontFold};

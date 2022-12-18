@@ -49,12 +49,16 @@ export class ApiService {
         return this.httpClient.get(this.uri + '/api/player/fold').pipe(catchError(this.handleError));
     }
 
+    public postHumanActionDiscard(cards: any) {
+        return this.httpClient.post(this.uri + '/api/player/discard', {cards: cards}).pipe(catchError(this.handleError));
+    }
+
     public postHumanActionBid(amount: number) {
         return this.httpClient.post(this.uri + '/api/player/bid/' + amount, {}).pipe(catchError(this.handleError));
     }
 
-    public postHumanActionDiscard(cards: any) {
-        return this.httpClient.post(this.uri + '/api/player/discard', {cards: cards}).pipe(catchError(this.handleError));
+    public addRival(rivalOut: string = '') {
+        return this.httpClient.post(this.uri + '/api/game/new-player/' + rivalOut, {}).pipe(catchError(this.handleError));
     }
 
     public getCheatShowCards() {
