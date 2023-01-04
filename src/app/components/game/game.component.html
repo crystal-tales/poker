@@ -4,6 +4,7 @@
             <mat-grid-tile
                     class="rival-tile"
                     (click)="changeImg(rival)"
+                    (contextmenu)="fullViewImg(getImg(rival, false))"
                     *ngFor="let rival of rivals"
                     [colspan]="getCols()"
                     [rowspan]="getRows()"

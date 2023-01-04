@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ApiService } from '../../services/api.service';
@@ -86,7 +87,7 @@ export class GameComponent implements OnInit {
         }
     }
 
-    getImg(rival: any) {
+    getImg(rival: any, urlWrap: boolean = true) {
         // Rotamos imgs
         if (this.currentImgs[rival['name']] === undefined) {
             this.currentImgs[rival['name']] = Math.floor(Math.random() * rival['imagesSet'][rival['currentStage']].length);
@@ -98,7 +99,11 @@ export class GameComponent implements OnInit {
             console.debug(rival);
             console.debug(this.currentImgs);
         }
-        return 'url("http://localhost:7777/players/' + rival['name'] + '/' + theImg + '")';
+        if (urlWrap) {
+            return 'url("http://localhost:7777/players/' + rival['name'] + '/' + theImg + '")';
+        } else {
+            return 'http://localhost:7777/players/' + rival['name'] + '/' + theImg;
+        }
     }
 
     getBackgroundColor(rival: any) {
@@ -443,6 +448,17 @@ export class GameComponent implements OnInit {
             }
         });
     }
+
+    fullViewImg(img: string) {
+        this.dialog.open(FullViewDialog, {
+            width: '90vw',
+            height: '95vh',
+            data: {
+                source: img
+            }
+        });
+        return false;
+    }
 }
 
 @Component({
@@ -450,4 +466,17 @@ export class GameComponent implements OnInit {
     templateUrl: 'confirm-dialog.html'
 })
 export class ConfirmDialog {
+}
+
+
+@Component({
+    selector: 'fullview-dialog',
+    templateUrl: 'fullview-dialog.html'
+})
+export class FullViewDialog {
+    theImg;
+
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private domSanitizer: DomSanitizer) {
+        this.theImg = this.domSanitizer.bypassSecurityTrustResourceUrl(data.source);
+    }
 }

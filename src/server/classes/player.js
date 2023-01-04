@@ -558,18 +558,16 @@ class Player {
         // Según venga un toYou mayor o menor y mi estrategia, pues apuesto más o menos o me rajo.
         // con strat 1 sumo la mitad, con 2 me mantengo y con 3 resto la mitad (para que parezca que viene menos)
         let toMe = this._toYou - Math.round((this._toYou * (this._strategy - 2)) / 2);
-        if (toMe <= 25) {
+        if (toMe <= 5) {
             rank = rank + Math.ceil(rank * 0.20);
-        } else if (toMe > 25 && toMe <= 50) {
+        } else if (toMe > 5 && toMe <= 20) {
             rank = rank + Math.ceil(rank * 0.10);
-        } else if (toMe > 50 && toMe <= 75) {
+        } else if (toMe > 20 && toMe <= 35) {
             rank = rank + Math.ceil(rank * 0.05);
-        } else if (toMe > 75 && toMe <= 100) {
+        } else if (toMe > 35 && toMe <= 50) {
             rank = rank - Math.ceil(rank * 0.10);
-        } else if (toMe > 100 && toMe <= 200) {
-            rank = rank - Math.ceil(rank * 0.15);
-        } else if (toMe > 200) {
-            rank = rank - Math.ceil(rank * 0.25);
+        } else if (toMe > 50) {
+            rank = rank - Math.ceil(rank * 0.20);
         }
         // Que no se me vaya de los rangos
         rank = Math.max(1, rank);

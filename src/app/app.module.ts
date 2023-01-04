@@ -20,7 +20,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DragDropDirective } from './components/drag-drop.directive';
-import { ConfirmDialog, GameComponent } from './components/game/game.component';
+import { ConfirmDialog, FullViewDialog, GameComponent } from './components/game/game.component';
 import { SelectPlayerComponent } from './components/select-player/select-player.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { SortHandPipe } from './services/sort-hand.pipe';
@@ -33,7 +33,8 @@ import { SortHandPipe } from './services/sort-hand.pipe';
         SortHandPipe,
         UploadComponent,
         DragDropDirective,
-        ConfirmDialog
+        ConfirmDialog,
+        FullViewDialog
     ],
     imports: [
         BrowserModule,
