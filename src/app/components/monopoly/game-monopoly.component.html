@@ -1,0 +1,123 @@
+<div class="global-container">
+    <div class="board-container">
+        <mat-grid-list cols="10" rowHeight="19.6vh">
+            <mat-grid-tile class="board-tile cell cell-{{cell.id}}" [style.background-image]="getCellImg(cell)"
+                           (click)="selectCell(cell)"
+                           *ngFor="let cell of game.board.cells"
+                           matTooltip="{{cell.type | uppercase}} {{cell.name}}" matTooltipShowDelay="1000">
+                <!--<p style="position: absolute;top:0;right: 5px">{{ cell.closed + '//' + cell.special }}#{{cell.id}}</p>-->
+                <div class="rival-chips">
+                    <span *ngFor="let rival of rivalsInThisCell(cell.id)"
+                          matTooltip="{{rival.name}}"
+                          [style.background-color]="rival.color">{{rival.name.charAt(0)}}</span>
+                </div>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+
+    <div class="players-container">
+        <div *ngFor="let rival of activeRivals()">
+            <div class="rival-box" *ngIf="(game.currentRival !== null) && (rival.name === game.currentRival)"
+                 (click)="fullViewImg(getImg(rival, false))"
+                 [style.border-color]="rival.color">
+                <div class="image" [style.background-image]="getImg(rival)"></div>
+
+                <div>
+                    <div class="rival-data">
+                        <p class="name highlight">{{rival.name}}</p>
+                        <p class="money">
+                            <mat-icon>attach_money</mat-icon>
+                            {{rival.money}}
+                        </p>
+                        <p class="corruption">
+                            <mat-icon>bubble_chart</mat-icon>
+                            {{rival.corruption}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="">
+            <mat-grid-list cols="4" rowHeight="100px" gutterSize="5px">
+                <mat-grid-tile class="image-tile"
+                               matTooltip="{{rival.name}}"
+                               (click)="fullViewImg(getImg(rival, false))"
+                               [style.border-color]="rival.color"
+                               [style.background-image]="getImg(rival)"
+                               *ngFor="let rival of activeRivals(false)">
+                    <!--<span class="name-mini">{{rival.name}}</span>-->
+                    <span class="money">
+                        {{rival.money}}
+                    </span>
+                    <span class="corruption">
+                        {{rival.corruption}}
+                    </span>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </div>
+
+        <div class="chat">
+            <p>{{message}}</p>
+        </div>
+
+        <div class="player-controls">
+            <div *ngIf="game.currentRival === null && selectedCell.type === 'hotel'">
+                <p>{{selectedCell.type | uppercase}}: {{selectedCell.name}}</p>
+                <button mat-flat-button (click)="buyCell(selectedCell)" color="accent" *ngIf="canBuy">
+                    <mat-icon color="">shopping_cart</mat-icon>
+                    Buy
+                </button>
+                <button mat-flat-button (click)="upgradeCell(selectedCell)" color="accent" *ngIf="canUpgrade">
+                    <mat-icon color="">shopping_cart</mat-icon>
+                    Upgrade
+                </button>
+                <button mat-flat-button (click)="buyAllCell()" color="primary">
+                    <mat-icon color="">shopping_cart</mat-icon>
+                    Buy all plots for sell
+                </button>
+            </div>
+        </div>
+
+        <div class="player-bar">
+            <p class="money">
+                <mat-icon>attach_money</mat-icon>
+                {{game.money}}
+            </p>
+            <!--<p>{{canBuy}}</p>-->
+            <!--<p>{{canUpgrade}}</p>-->
+            <div>
+                <button mat-flat-button (click)="nextTurn()" color="warn">
+                    Next turn
+                    <mat-icon color="">hourglass_empty</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="counter-bar">
+            <div [class.cblue]="police > 0" matTooltip="Police: Hotel's backrooms are closed these turns" matTooltipShowDelay="1000">
+                <mat-icon>admin_panel_settings</mat-icon>
+                {{police}}
+            </div>
+            <div [class.cred]="inspector > 0" matTooltip="Inspection: Hotels are closed these turns" matTooltipShowDelay="1000">
+                <mat-icon>content_paste_search</mat-icon>
+                {{inspector}}
+            </div>
+            <div [class.cgreen]="mafia > 0" matTooltip="Mafia: Hotel's backrooms do not payback these turns" matTooltipShowDelay="1000">
+                <mat-icon>diamond</mat-icon>
+                {{mafia}}
+            </div>
+            <div [class.cpurple]="corruption > 0" matTooltip="Corruption: Hotel prices are doubled these turns" matTooltipShowDelay="1000">
+                <mat-icon>payments</mat-icon>
+                {{corruption}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--
+
+            <video autoplay loop muted preload="none" playsinline>
+                <source src="http://localhost:7777/api/m/video/general/5" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+-->

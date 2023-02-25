@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiMonopolyService } from '../../services/api-monopoly.service';
 import { ApiService } from '../../services/api.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class SelectPlayerComponent implements OnInit {
     playerList = [];
     selectedPlayers: Array<string> = [];
 
-    constructor(private apiService: ApiService, private router: Router) {
+    constructor(private apiService: ApiService, private apiMonopolyService: ApiMonopolyService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -31,6 +32,15 @@ export class SelectPlayerComponent implements OnInit {
                 this.router.navigate(['/game']).catch(e => {console.error(e);});
             },
             error: (err: Error) => console.error('Error starting new game: ' + err)
+        });
+    }
+
+    startMonopoly() {
+        this.apiMonopolyService.postStartGame(this.selectedPlayers).subscribe({
+            next: (response) => {
+                this.router.navigate(['/monopoly']).catch(e => {console.error(e);});
+            },
+            error: (err: Error) => console.error('Error starting new monopoly: ' + err)
         });
     }
 

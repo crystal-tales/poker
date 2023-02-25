@@ -12,6 +12,10 @@
         Start Game
         <mat-icon>web_stories</mat-icon>
     </button>
+    <button mat-raised-button (click)="startMonopoly()" color="accent" class="negrita margin-r-20" [disabled]="selectedPlayers.length!==4">
+        Start Monopoly
+        <mat-icon>apartment</mat-icon>
+    </button>
     <button mat-icon-button (click)="uploadImages()" color="accent" matTooltip="Create rival">
         <mat-icon>upload</mat-icon>
     </button>

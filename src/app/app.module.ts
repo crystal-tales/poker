@@ -21,6 +21,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DragDropDirective } from './components/drag-drop.directive';
 import { ConfirmDialog, FullViewDialog, GameComponent } from './components/game/game.component';
+import {
+    ConfirmMonopolyDialog,
+    FullViewMonopolyDialog,
+    FullViewVideoMonopolyDialog,
+    GameMonopolyComponent
+} from './components/monopoly/game-monopoly.component';
 import { SelectPlayerComponent } from './components/select-player/select-player.component';
 import { UploadComponent } from './components/upload/upload.component';
 import { SortHandPipe } from './services/sort-hand.pipe';
@@ -34,7 +40,11 @@ import { SortHandPipe } from './services/sort-hand.pipe';
         UploadComponent,
         DragDropDirective,
         ConfirmDialog,
-        FullViewDialog
+        FullViewDialog,
+        ConfirmMonopolyDialog,
+        FullViewMonopolyDialog,
+        FullViewVideoMonopolyDialog,
+        GameMonopolyComponent
     ],
     imports: [
         BrowserModule,

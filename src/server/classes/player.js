@@ -21,7 +21,7 @@ class Player {
     _old = false;
     _firstStage;
     _lastStage;
-    _ko = false;
+    _corruption = false;
     // propiedades relativas a un turno
     _hand = [];
     _decision = {1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null};
@@ -126,7 +126,7 @@ class Player {
     }
 
     get ko() {
-        return this._ko;
+        return this._corruption;
     }
 
     get hasFolded() {
@@ -162,7 +162,7 @@ class Player {
             old: this._old,
             lastStage: this._lastStage,
             leftStages: this._leftStages,
-            ko: this._ko,
+            ko: this._corruption,
             toYou: this._toYou,
             hasFolded: this._hasFolded
         };
@@ -333,7 +333,7 @@ class Player {
 
         // Si no tengo más stages, he perdido
         if (this._leftStages <= 0) {
-            this._ko = true;
+            this._corruption = true;
             this._leftStages = 0;
             this._money = 0;
             console.debug('[PayDebts]' + this._name + ' ha perdido.');
