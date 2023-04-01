@@ -190,8 +190,10 @@ export class GameMonopolyComponent implements OnInit {
                 this.checkCounters();
 
                 // Si cambió la corrupción mostraré resultados
-                if (response.corruption) {
+                console.log(response);
+                if (response.corrupt) {
                     const r = this.getRival(this.game.currentRival);
+                    console.log(r);
                     if (r !== null) {
                         if (r['corruption'] < 4) {
                             this.fullViewImg(this.getImg(r, false));
@@ -254,7 +256,7 @@ export class GameMonopolyComponent implements OnInit {
         if (cStage === '') {
             console.debug('cStage undefined ' + rival.name);
         }
-        // console.log(rival['imagesSet']);
+        // console.log(JSON.stringify(rival));
         // Rotamos imgs
         if (this.currentImgs[rival['name']] === undefined) {
             this.currentImgs[rival['name']] = Math.floor(Math.random() * rival['imagesSet'][cStage].length);
@@ -274,15 +276,44 @@ export class GameMonopolyComponent implements OnInit {
     }
 
     activeRivals(current: any = true) {
-        let actives: any[] = [];
+        let found = false, prev: any[] = [], last: any[] = [];
         this.rivals.forEach((rival: any) => {
             if (!rival.out) {
+                if (this.game.currentRival === rival.name) {
+                    found = true;
+                }
                 if (current || (!current && this.game.currentRival !== rival.name)) {
-                    actives.push(rival);
+                    // actives.push(rival);
+                    if (!found) {
+                        prev.push(rival);
+                    } else {
+                        last.push(rival);
+                    }
                 }
             }
         });
-        return actives;
+        return [...last, ...prev];
+    }
+
+    getBuyCost(cell: any) {
+        return cell.costs[cell.type]['1'];
+    }
+
+    getUpgradeCost(cell: any) {
+        if (!cell.owned) {
+            return '';
+        }
+        return cell.costs[cell.type]['' + (cell.level + 1)];
+    }
+
+    getAllCost() {
+        let amount = 0;
+        this.game.board.cells.forEach((cell: any) => {
+            if (cell.type === 'hotel' && cell.owned === false) {
+                amount += cell.costs['hotel']['1'];
+            }
+        });
+        return amount;
     }
 
     /**
@@ -305,7 +336,20 @@ export class GameMonopolyComponent implements OnInit {
     }
 
     fullViewVideo(rival: any) {
-        let videoUrl = 'http://localhost:7777/api/m/video/' + rival['name'] + '/' + rival['corruption'];
+        let cat = 0;
+        switch (rival['corruption']) {
+            case 4:
+            case 5:
+            case 6:
+                cat = 4;
+                break;
+            case 7:
+            case 8:
+            case 9:
+                cat = 5;
+                break;
+        }
+        let videoUrl = 'http://localhost:7777/api/m/video/' + rival['name'] + '/' + cat;
         this.dialog.open(FullViewVideoMonopolyDialog, {
             width: '90vw',
             height: '95vh',

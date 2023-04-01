@@ -3,7 +3,9 @@ import utils from '../utils.js';
 import Board from './board.js';
 
 const cellOrder = [0, 1, 11, 21, 31, 32, 22, 12, 2, 3, 13, 23, 33, 34, 24, 14, 4, 5, 15, 25, 35, 36, 26, 16, 6, 7, 17, 27, 37, 38, 28, 18, 8, 9, 19, 29, 39, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 30, 20, 10];
-const giftPasoMeta = 1000;
+const giftPasoMeta = 2000;
+
+const cheat = true;
 
 class Game {
     _rivals = [];
@@ -34,6 +36,15 @@ class Game {
         // starter, player
         this._currentRival = null;
         this._money = 10000;
+
+        if (cheat) {
+            this._money = 1000000;
+            this._board.cells.forEach(cell => {
+                if (cell.type === 'hotel') {
+                    cell.level = 6;
+                }
+            });
+        }
     }
 
 
@@ -192,6 +203,12 @@ class Game {
         // Ejecuto la celda final
         let result = this.execCell();
 
+        // Reduzco contadores
+        this._counters.police = Math.max(0, this._counters.police - 1);
+        this._counters.inspector = Math.max(0, this._counters.inspector - 1);
+        this._counters.mafia = Math.max(0, this._counters.mafia - 1);
+        this._counters.corruption = Math.max(0, this._counters.corruption - 1);
+
         // Devuelvo los resultados al jugador para que elija si ha de elegir o continue al siguiente turno
         return result;
     }
@@ -273,16 +290,16 @@ class Game {
                 msg = 'Corruption: ' + n + ' turns';
                 break;
             case 'extortion':
-                n = this.random(1, 3) * 1000;
+                n = this.random(1, 4) * 500;
                 data.rival.money -= n;
                 this.setRival(data);
-                msg = 'Extortion for -' + n + '€';
+                msg = 'Extortion for $-' + n;
                 break;
             case 'subsidy':
                 n = this.random(1, 4) * 1000;
                 data.rival.money += n;
                 this.setRival(data);
-                msg = 'Subsidy for ' + n + '€';
+                msg = 'Subsidy for $' + n;
                 break;
             case 'stock':
                 n = this.random(-2, 5) * 1000;
@@ -290,12 +307,16 @@ class Game {
                     n = 1000;
                 }
                 this._money = this._money + n;
-                msg = 'Stock for ' + n + '€';
+                msg = 'Stock for $' + n;
                 break;
             case 'card':
                 msg = '';
                 break;
             case 'hotel':
+                if (!cell.owned) {
+                    break;
+                }
+
                 // Cojo dinero del rival
                 if (data.rival.money > 0) {
                     // Nivel máximo 5 de la parte hotel
@@ -306,12 +327,12 @@ class Game {
 
                     // Si hay que duplicar o hacer gratis hotel
                     if (this._counters.inspector > 0) {
-                        this._counters.inspector--;
+                        // this._counters.inspector--;
                         msg = 'Hotels shutdown due to inspection';
                         break;
                     }
                     if (this._counters.corruption > 0) {
-                        this._counters.corruption--;
+                        // this._counters.corruption--;
                         price = price * 2;
                         alreadyDoubled = true;
                         msg = 'Politician corruption doubled hotel prices. ';
@@ -347,12 +368,12 @@ class Game {
                     } else {
                         // Si hay que duplicar o hacer gratis hotel
                         if (this._counters.police > 0) {
-                            this._counters.police--;
+                            // this._counters.police--;
                             msg = 'Parlour shutdown due to police raid';
                             break;
                         }
                         if (this._counters.mafia > 0) {
-                            this._counters.mafia--;
+                            // this._counters.mafia--;
                             reward = 0;
                             alreadyFree = true;
                             msg = 'Mafia forced parlour workers to work for free. ';
@@ -373,7 +394,10 @@ class Game {
                         }
 
                         // Funcionamiento normal
-                        data.rival.corruption++;
+                        if ((cell.level === 6 && data.rival.corruption < 6) || (cell.level === 7 && data.rival.corruption < 9) || (cell.level === 8)) {
+                            data.rival.corruption++;
+                        }
+                        // TODO aqui podría comprobar si corruption 10 para sacarle del juego
                         corrupt = true;
                     }
 

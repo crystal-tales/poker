@@ -10,7 +10,7 @@ class Cell {
     // Costes de compra (1) y mejora
     _costs = {'hotel': {1: 250, 2: 500, 3: 1000, 4: 2000, 5: 5000, 6: 2000, 7: 3500, 8: 5000}};
     // Precios al caer que han de pagar, en el caso de los negativos indican que son "trabajos extra" por los que se recibe dinero en vez de pagar
-    _prices = {'hotel': {1: 100, 2: 200, 3: 300, 4: 400, 5: 500, 6: -100, 7: -250, 8: -500}};
+    _prices = {'hotel': {1: 100, 2: 200, 3: 300, 4: 400, 5: 500, 6: -500, 7: -1500, 8: -2500}};
 
     constructor(type) {
         this._type = type;

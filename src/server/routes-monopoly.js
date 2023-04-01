@@ -44,7 +44,7 @@ router.get('/game', (req, res) => {
 // Siguiente turno
 router.get('/game/turn', (req, res) => {
     const result = game.nextTurn();
-    res.json({data: game.json(), message: result.message});
+    res.json({data: game.json(), message: result.message, corrupt: result.corrupt});
 });
 
 // Usar coacción
@@ -130,6 +130,7 @@ function findVideos() {
 function getVideo(folder, subfolder) {
     // Si no existe el folder, voy a general
     if (!existingFolders.includes(folder)) {
+        console.log('noexite ' + folder + ' -- ' + subfolder);
         folder = 'general';
     }
     return videos[folder][subfolder][Math.floor(Math.random() * videos[folder][subfolder].length)];

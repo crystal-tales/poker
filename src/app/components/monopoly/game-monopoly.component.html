@@ -64,17 +64,17 @@
         <div class="player-controls">
             <div *ngIf="game.currentRival === null && selectedCell.type === 'hotel'">
                 <p>{{selectedCell.type | uppercase}}: {{selectedCell.name}}</p>
-                <button mat-flat-button (click)="buyCell(selectedCell)" color="accent" *ngIf="canBuy">
+                <button mat-flat-button (click)="buyCell(selectedCell)" color="accent" [disabled]="!canBuy">
                     <mat-icon color="">shopping_cart</mat-icon>
-                    Buy
+                    Buy for ${{getBuyCost(selectedCell)}}
                 </button>
-                <button mat-flat-button (click)="upgradeCell(selectedCell)" color="accent" *ngIf="canUpgrade">
+                <button mat-flat-button (click)="upgradeCell(selectedCell)" color="accent" [disabled]="!canUpgrade">
                     <mat-icon color="">shopping_cart</mat-icon>
-                    Upgrade
+                    Upgrade for ${{getUpgradeCost(selectedCell)}}
                 </button>
-                <button mat-flat-button (click)="buyAllCell()" color="primary">
+                <button mat-flat-button (click)="buyAllCell()" color="primary" [disabled]="game.money < getAllCost()">
                     <mat-icon color="">shopping_cart</mat-icon>
-                    Buy all plots for sell
+                    Buy all plots for sell, for ${{getAllCost()}}
                 </button>
             </div>
         </div>
