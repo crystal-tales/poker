@@ -86,4 +86,12 @@ const listRivalsAvailable = function () {
     return folders;
 };
 
-export default {saveImages, capitalizeFirstLetter, listRivalsAvailable};
+const jsonifyArrayOfClasses = function (array) {
+    let jsonA = [];
+    for (let d of array) {
+        jsonA.push(d.json());
+    }
+    return jsonA;
+};
+
+export default {saveImages, capitalizeFirstLetter, listRivalsAvailable, jsonifyArrayOfClasses};

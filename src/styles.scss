@@ -20,11 +20,11 @@ $poker-warn: mat.define-palette(mat.$red-palette);
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $poker-theme: mat.define-dark-theme((
-        color: (
-                primary: $poker-primary,
-                accent: $poker-accent,
-                warn: $poker-warn,
-        )
+    color: (
+        primary: $poker-primary,
+        accent: $poker-accent,
+        warn: $poker-warn,
+    )
 ));
 
 // Include theme styles for core and each component used in your app.
@@ -58,4 +58,13 @@ body {
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+mat-progress-bar.anima {
+    height: 20px;
+}
+
+mat-progress-bar.anima .mdc-linear-progress__bar-inner {
+    border-color: inherit !important;
+    border-top-width: 40px;
 }

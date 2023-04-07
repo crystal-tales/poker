@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ApiMonopolyService } from '../../services/api-monopoly.service';
-import { ApiService } from '../../services/api.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {ApiMonopolyService} from '../../services/api-monopoly.service';
+import {ApiService} from '../../services/api.service';
+import {ApiAnimaService} from "../../services/api-anima.service";
 
 @Component({
     selector: 'app-select-player',
@@ -11,8 +12,9 @@ import { ApiService } from '../../services/api.service';
 export class SelectPlayerComponent implements OnInit {
     playerList = [];
     selectedPlayers: Array<string> = [];
+    animaHumanPlayers: Array<string> = [];
 
-    constructor(private apiService: ApiService, private apiMonopolyService: ApiMonopolyService, private router: Router) {
+    constructor(private apiService: ApiService, private apiMonopolyService: ApiMonopolyService, private apiAnimaService: ApiAnimaService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -20,6 +22,8 @@ export class SelectPlayerComponent implements OnInit {
             next: (response: any) => this.playerList = response.players,
             error: (err: Error) => console.error('Error getting player list: ' + err)
         });
+        // Lista de posibles jugadores humanos
+        this.animaHumanPlayers.push('CandyTS');
     }
 
     getImg(player: string) {
@@ -29,7 +33,9 @@ export class SelectPlayerComponent implements OnInit {
     startGame() {
         this.apiService.postStartGame(this.selectedPlayers).subscribe({
             next: (response) => {
-                this.router.navigate(['/game']).catch(e => {console.error(e);});
+                this.router.navigate(['/game']).catch(e => {
+                    console.error(e);
+                });
             },
             error: (err: Error) => console.error('Error starting new game: ' + err)
         });
@@ -38,9 +44,25 @@ export class SelectPlayerComponent implements OnInit {
     startMonopoly() {
         this.apiMonopolyService.postStartGame(this.selectedPlayers).subscribe({
             next: (response) => {
-                this.router.navigate(['/monopoly']).catch(e => {console.error(e);});
+                this.router.navigate(['/monopoly']).catch(e => {
+                    console.error(e);
+                });
             },
             error: (err: Error) => console.error('Error starting new monopoly: ' + err)
+        });
+    }
+
+
+    startAnima() {
+        // Add the human first
+        this.selectedPlayers.unshift(this.animaHumanPlayers[Math.floor(Math.random() * this.animaHumanPlayers.length)]);
+        this.apiAnimaService.postStartGame(this.selectedPlayers).subscribe({
+            next: (response) => {
+                this.router.navigate(['/anima']).catch(e => {
+                    console.error(e);
+                });
+            },
+            error: (err: Error) => console.error('Error starting new anima: ' + err)
         });
     }
 
@@ -74,6 +96,19 @@ export class SelectPlayerComponent implements OnInit {
     }
 
     uploadImages() {
-        this.router.navigate(['/upload']).catch(e => {console.error(e);});
+        this.router.navigate(['/upload']).catch(e => {
+            console.error(e);
+        });
+    }
+
+    validForAnima() {
+        let validPlayers = true;
+        this.selectedPlayers.forEach((p: string) => {
+            if (this.animaHumanPlayers.includes(p)) {
+                validPlayers = false;
+            }
+        });
+
+        return (this.selectedPlayers.length === 3 && validPlayers);
     }
 }

@@ -1,0 +1,525 @@
+.global-container {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    height: 100vh;
+}
+
+.board-container {
+    width: 80vw;
+}
+
+.sideboard-container {
+    width: 20vw;
+    background-image: url("http://localhost:7777/anima/general/wood.jpg");
+    background-size: 200px;
+}
+
+.sideboard-container img {
+    width: 90%;
+    margin: 5% 0 0 5%;
+}
+
+.players-top-container, .players-bottom-container {
+    display: flex;
+    flex-direction: row;
+    height: 40vh;
+}
+
+.player-one-container, .player-two-container, .player-three-container, .player-four-container {
+    width: 40vw;
+    background: #000;
+    display: flex;
+    flex-direction: row;
+    border: 5px #0366d6 inset;
+}
+
+.player-two-container {
+    border-color: #388e3c;
+}
+
+.player-three-container {
+    border-color: #9c27b0;
+}
+
+.player-four-container {
+    border-color: #ff4b01;
+}
+
+.player-image {
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 58%;
+    height: 100%;
+}
+
+.player-stats {
+    width: 12%;
+    background-image: url("http://localhost:7777/anima/general/wood.jpg");
+    background-size: 200px;
+}
+
+.player-name {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    color: whitesmoke;
+    -webkit-text-stroke: #000 1px;
+    text-stroke: #000 1px;
+    font-weight: 500;
+}
+
+.player-name.active {
+    color: gold;
+    -webkit-text-stroke: #000 0px;
+    text-stroke: #000 0px;
+}
+
+.player-hand {
+    color: whitesmoke;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.player-mission {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.player-mission img {
+    width: 90%;
+}
+
+.player-board {
+    position: relative;
+    width: 30%;
+    background-image: url("http://localhost:7777/anima/general/marble.jpg");
+    background-size: 200px;
+    //background-color: whitesmoke;
+}
+
+.player-board-card {
+    width: 115px;
+    height: 160px;
+    position: absolute;
+    background-color: #222222;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.player-board-card.one {
+    top: 6px;
+    left: 5px;
+}
+
+.player-board-card.two {
+    top: 6px;
+    right: 5px;
+}
+
+.player-board-card.three {
+    bottom: 6px;
+    left: 5px;
+}
+
+.player-board-card.four {
+    bottom: 6px;
+    right: 5px;
+}
+
+
+.gamezone-container {
+    height: 20vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    //border: 5px brown inset;
+    background-image: url("http://localhost:7777/anima/general/wood.jpg");
+    background-size: 200px;
+}
+
+.gamezone-place-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.gamezone-card {
+    margin: 0 5px;
+    width: 115px;
+    height: 160px;
+    background-color: #222222;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.gamezone-card.place.one {
+
+}
+
+////////////
+
+.players-container {
+    padding: 10px 20px;
+    width: 20vw;
+    color: #FFF;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat {
+    height: 10vh;
+    border-top: 2px solid #444444;
+    margin-top: 10px;
+}
+
+.player-controls {
+    height: 40vh;
+    border-top: 2px solid #444444;
+    margin-top: 10px;
+}
+
+.player-controls div {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 100%;
+}
+
+.player-bar {
+    border-top: 2px solid #444444;
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.counter-bar {
+    border-top: 2px solid #444444;
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.counter-bar div {
+    color: #444;
+}
+
+.cblue {
+    color: #2196f3 !important;
+}
+
+.cred {
+    color: #d32f2f !important;
+}
+
+.cgreen {
+    color: #388e3c !important;
+}
+
+.cpurple {
+    color: #9c27b0 !important;
+}
+
+
+.board-tile {
+    background-color: #FFF;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.rival-box {
+    display: flex;
+    flex-direction: row;
+    border: 5px #444444 groove;
+    margin: 5px 0;
+}
+
+.other-box {
+    display: flex;
+    flex-direction: row;
+    border: 5px #444444 groove;
+    margin: 5px 0;
+}
+
+.rival-chips {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    max-width: 100%;
+}
+
+.rival-chips span {
+    border: 3px #444444 solid;
+    border-radius: 50px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    padding: 0 0 4px 0;
+    margin-left: 5px;
+}
+
+.image {
+    height: 100px;
+    width: 150px;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-size: contain;
+}
+
+.image-tile {
+    border: 2px solid black;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.image-tile .money {
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+    padding: 0 2px;
+}
+
+.image-tile .corruption {
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: black;
+    padding: 0 2px
+}
+
+.rival-box p {
+    margin: 5px 0;
+}
+
+.highlight {
+    color: #d9940e;
+    font-weight: bold;
+}
+
+.money {
+    color: #64dd17;
+}
+
+.corruption {
+    color: #aa00ff;
+}
+
+.name-mini {
+    font-size: 0.7rem;
+    position: absolute;
+    top: 0;
+    background-color: black;
+    padding: 0 5px;
+}
+
+mat-icon {
+    vertical-align: text-bottom;
+}
+
+.ocultar {
+    display: none !important;
+}
+
+.cell {
+    border: 5px solid transparent;
+}
+
+.cell-0 {
+    border-left-color: #3949ab;
+    border-top-color: #3949ab;
+}
+
+.cell-1, .cell-3, .cell-5, .cell-7 {
+    border-top-color: #3949ab;
+}
+
+.cell-2, .cell-4, .cell-6, .cell-8 {
+    border-left-color: #3949ab;
+    border-top-color: #3949ab;
+}
+
+.cell-9 {
+    border-right-color: #3949ab;
+    border-top-color: #3949ab;
+}
+
+.cell-10, .cell-11, .cell-12, .cell-13, .cell-14, .cell-15, .cell-16, .cell-17, .cell-18, .cell-20, .cell-21, .cell-22, .cell-23, .cell-24, .cell-25, .cell-26, .cell-27, .cell-28, .cell-30, .cell-31, .cell-33, .cell-35, .cell-37 {
+    border-left-color: #3949ab;
+}
+
+.cell-32, .cell-34, .cell-36, .cell-38 {
+}
+
+.cell-19, .cell-29, .cell-39 {
+    border-left-color: #3949ab;
+    border-right-color: #3949ab;
+}
+
+.cell-40 {
+    border-left-color: #3949ab;
+    border-bottom-color: #3949ab;
+}
+
+.cell-41, .cell-42, .cell-43, .cell-44, .cell-45, .cell-46, .cell-47, .cell-48 {
+    border-bottom-color: #3949ab;
+    border-top-color: #3949ab;
+}
+
+.cell-49 {
+    border-right-color: #3949ab;
+    border-bottom-color: #3949ab;
+}
+
+/*
+
+.placeholder {
+    height: 56px;
+}
+
+
+
+
+.rival-name {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    text-shadow: 1px 1px 2px #3949ab;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.rival-clothes {
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    text-shadow: 1px 1px 2px #3949ab;
+}
+
+.rival-add-button {
+    position: absolute;
+    bottom: 5px;
+    right: 55px;
+    text-shadow: 1px 1px 2px #3949ab;
+}
+
+.rival-money {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    text-shadow: 1px 1px 2px #3949ab;
+}
+
+.rival-cards {
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    text-shadow: 1px 1px 2px #3949ab;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.rival-card {
+    width: 70px;
+    height: 100px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.rival-msg {
+    position: absolute;
+    bottom: -15px;
+    right: 10px;
+    text-shadow: 1px 1px 2px #3949ab;
+    background-color: #3949ab;
+    opacity: 0.8;
+}
+
+.rival-money mat-icon, .rival-clothes mat-icon, .you-stats mat-icon {
+    vertical-align: bottom;
+}
+
+
+.chat {
+    padding: 0 5px;
+    height: 50vh;
+    border-bottom: 5px solid #222;
+    overflow-y: auto;
+}
+
+.chat p {
+    margin: 5px 0;
+}
+
+.game-stats {
+    color: #FF0;
+    height: 5vh;
+    background-color: #222222;
+}
+
+.bid-buttons, .action-buttons, .cheat-buttons, .game-stats {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.bid-buttons {
+    margin-top: 5px;
+}
+
+.progress-button {
+    margin: 10px 10px;
+}
+
+.you-stats {
+    padding: 5px 0;
+    color: #ccc;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.my-cards {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 5px;
+}
+
+.my-card {
+    width: 70px;
+    height: 100px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.discarded {
+    opacity: 0.2;
+}
+*/
