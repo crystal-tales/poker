@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import routes from './routes.js';
 import routesMonopoly from './routes-monopoly.js';
 import routesAnima from './routes-anima.js';
+import routesBar from './routes-bar.js';
 import {join} from 'node:path';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -30,6 +31,7 @@ app.use(express.static(join(root, 'dist/poker/')));
 app.use('/api', routes);
 app.use('/api/m/', routesMonopoly);
 app.use('/api/a/', routesAnima);
+app.use('/api/b/', routesBar);
 
 app.get('*', (req, res) => {
     res.sendFile('dist/poker/index.html', {root});

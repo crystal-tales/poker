@@ -37,6 +37,14 @@ import {
     GameAnimaComponent
 } from "./components/anima/game-anima.component";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {
+    ConfirmBarDialog,
+    FullViewBarDialog,
+    FullViewVideoBarDialog,
+    GameBarComponent,
+    MarketBarDialog
+} from "./components/bar/game-bar.component";
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
     declarations: [
@@ -55,7 +63,12 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
         ConfirmAnimaDialog,
         FullViewAnimaDialog,
         FullViewVideoAnimaDialog,
-        GameAnimaComponent
+        GameAnimaComponent,
+        ConfirmBarDialog,
+        FullViewBarDialog,
+        FullViewVideoBarDialog,
+        GameBarComponent,
+        MarketBarDialog
     ],
     imports: [
         BrowserModule,
@@ -76,7 +89,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
         MatInputModule,
         FormsModule,
         MatDialogModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatCardModule
     ],
     providers: [],
     bootstrap: [AppComponent]

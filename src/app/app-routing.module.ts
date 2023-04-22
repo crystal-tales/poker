@@ -5,12 +5,14 @@ import {GameMonopolyComponent} from './components/monopoly/game-monopoly.compone
 import {GameAnimaComponent} from "./components/anima/game-anima.component";
 import {SelectPlayerComponent} from './components/select-player/select-player.component';
 import {UploadComponent} from './components/upload/upload.component';
+import {GameBarComponent} from "./components/bar/game-bar.component";
 
 const routes: Routes = [
     {path: '', component: SelectPlayerComponent},
     {path: 'game', component: GameComponent},
     {path: 'monopoly', component: GameMonopolyComponent},
     {path: 'anima', component: GameAnimaComponent},
+    {path: 'bar', component: GameBarComponent},
     {path: 'upload', component: UploadComponent}
 ];
 

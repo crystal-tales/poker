@@ -265,7 +265,9 @@ class Player {
     }
 
     drawCard(card) {
-        this._hand.push(card);
+        if (card) {
+            this._hand.push(card);
+        }
     }
 
     emptyHand() {

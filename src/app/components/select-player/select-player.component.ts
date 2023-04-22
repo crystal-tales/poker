@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {ApiMonopolyService} from '../../services/api-monopoly.service';
 import {ApiService} from '../../services/api.service';
 import {ApiAnimaService} from "../../services/api-anima.service";
+import {ApiBarService} from "../../services/api-bar.service";
 
 @Component({
     selector: 'app-select-player',
@@ -14,7 +15,7 @@ export class SelectPlayerComponent implements OnInit {
     selectedPlayers: Array<string> = [];
     animaHumanPlayers: Array<string> = [];
 
-    constructor(private apiService: ApiService, private apiMonopolyService: ApiMonopolyService, private apiAnimaService: ApiAnimaService, private router: Router) {
+    constructor(private apiService: ApiService, private apiMonopolyService: ApiMonopolyService, private apiAnimaService: ApiAnimaService, private apiBarService: ApiBarService, private router: Router) {
     }
 
     ngOnInit(): void {
@@ -63,6 +64,17 @@ export class SelectPlayerComponent implements OnInit {
                 });
             },
             error: (err: Error) => console.error('Error starting new anima: ' + err)
+        });
+    }
+
+    startBar() {
+        this.apiBarService.postStartGame().subscribe({
+            next: (response) => {
+                this.router.navigate(['/bar']).catch(e => {
+                    console.error(e);
+                });
+            },
+            error: (err: Error) => console.error('Error starting new bar: ' + err)
         });
     }
 

@@ -8,6 +8,7 @@ const cheat = true;
 class Game {
     _players = [];
     _currentPlayerId;
+    _currentPhase;
     _humanPlayerId;
     _usedPlayers = [];
     _board;
@@ -18,6 +19,8 @@ class Game {
     constructor(players) {
         this._newGame = true;
         this._board = new Board();
+        // Pongo 0 de current fase porque acaba de empezar turno
+        this._currentPhase = 0;
 
         // Genero decks
         this._decks = new Deck();
@@ -41,6 +44,10 @@ class Game {
             // También una misión
             ply.mission = this._decks.drawMission();
 
+            // Y cartas
+            ply.drawCard(this._decks.drawSpell());
+            ply.drawCard(this._decks.drawSpell());
+
             this._players.push(ply);
             this._usedPlayers.push(id);
             if (!this._humanPlayerId) {
@@ -52,6 +59,10 @@ class Game {
 
     get currentPlayerId() {
         return this._currentPlayerId;
+    }
+
+    get currentPhase() {
+        return this._currentPhase;
     }
 
     get currentPlayer() {
@@ -92,6 +103,32 @@ class Game {
 
     get cementeries() {
         return this._cementeries;
+    }
+
+    json() {
+        const out = {
+            currentPlayer: this._currentPlayerId,
+            board: this._board.json(),
+            currentPlayerId: this._currentPlayerId,
+            humanPlayerId: this._humanPlayerId,
+            decks: {
+                characters: utils.jsonifyArrayOfClasses(this._decks.characters),
+                places: utils.jsonifyArrayOfClasses(this._decks.places),
+                guardians: utils.jsonifyArrayOfClasses(this._decks.guardians),
+                missions: utils.jsonifyArrayOfClasses(this._decks.missions),
+                spells: utils.jsonifyArrayOfClasses(this._decks.spells)
+            },
+            cementeries: {
+                characters: utils.jsonifyArrayOfClasses(this._cementeries.characters),
+                places: utils.jsonifyArrayOfClasses(this._cementeries.places),
+                guardians: utils.jsonifyArrayOfClasses(this._cementeries.guardians),
+                missions: utils.jsonifyArrayOfClasses(this._cementeries.missions),
+                spells: utils.jsonifyArrayOfClasses(this._cementeries.spells)
+            },
+            players: utils.jsonifyArrayOfClasses(this._players)
+        };
+        console.log(JSON.stringify(out));
+        return out;
     }
 
 
@@ -153,244 +190,77 @@ class Game {
         return true;
     }
 
-    json() {
-        const out = {
-            currentPlayer: this._currentPlayerId,
-            board: this._board.json(),
-            currentPlayerId: this._currentPlayerId,
-            humanPlayerId: this._humanPlayerId,
-            decks: {
-                characters: utils.jsonifyArrayOfClasses(this._decks.characters),
-                places: utils.jsonifyArrayOfClasses(this._decks.places),
-                guardians: utils.jsonifyArrayOfClasses(this._decks.guardians),
-                missions: utils.jsonifyArrayOfClasses(this._decks.missions),
-                spells: utils.jsonifyArrayOfClasses(this._decks.spells)
-            },
-            cementeries: {
-                characters: utils.jsonifyArrayOfClasses(this._cementeries.characters),
-                places: utils.jsonifyArrayOfClasses(this._cementeries.places),
-                guardians: utils.jsonifyArrayOfClasses(this._cementeries.guardians),
-                missions: utils.jsonifyArrayOfClasses(this._cementeries.missions),
-                spells: utils.jsonifyArrayOfClasses(this._cementeries.spells)
-            },
-            players: utils.jsonifyArrayOfClasses(this._players)
-        };
-        console.log(JSON.stringify(out));
-        return out;
-    }
+    nextPhase() {
+        let result = {};
+        this._currentPhase++;
 
-    nextTurn() {
-        // Primero paso al player siguiente
-        this.nextPlayer();
-
-        // Si el siguiente es el jugador, no haré nada
-        if (this._currentPlayerId === null) {
-            console.log('Toca al jugador');
-            return {message: 'Your turn'};
+        switch (this._currentPhase) {
+            // INICIO
+            case 1:
+                // Empezamos un turno con los pasos de mantenimiento en la fase de inicio
+                // Recogida de puntos de habilidad de personajes
+                // Ejecución y reducción de efectos activos
+                // Pasamos el control al jugador para ver si ejecuta hechizos
+                if (this._currentPlayerId !== this._humanPlayerId) {
+                    // Si no es humano ejecuto la IA de la fase de inicio
+                }
+                break;
+            // MOVE
+            case 2:
+                // Pasamos el control al jugador para el movimiento
+                if (this._currentPlayerId !== this._humanPlayerId) {
+                    // Si no es humano ejecuto la IA de la fase de movimiento
+                }
+                break;
+            // COMBATE
+            case 3:
+                // Pasamos el control al jugador para el combate
+                if (this._currentPlayerId !== this._humanPlayerId) {
+                    // Si no es humano ejecuto la IA de la fase de combate
+                }
+                break;
+            // FINAL
+            case 4:
+                // Ejecutamos las acciones automáticas de final y limpieza
+                break;
+            case 5:
+                // Empieza nuevo turno
+                this.nextPlayer();
+            // this._currentPhase = 0;
+            // // Si el siguiente es el jugador, no haré nada
+            // if (this._currentPlayerId === null) {
+            //     console.log('Toca al jugador');
+            //     result= {message: 'Your turn'};
+            // }
         }
 
-
-        // Devuelvo los resultados al jugador para que elija si ha de elegir o continue al siguiente turno
         return result;
     }
 
-    nextPlayer() {
-        let found = false, end = true;
-        for (const player of this._players) {
-            // Si encontré en el bucle anterior al current, entonces este es el siguiente, o si vengo del jugador (entonces el siguiente será el primer player)
-            if (found || this._currentPlayerId === null) {
-                this._currentPlayerId = player.name;
-                // Encontré al siguiente y no he terminado con la lista
-                end = false;
-                break;
-            } else if (this._currentPlayerId === player.name) {
-                // He encontrado al current, lo marco para escoger al siguiente si es que existe
-                found = true;
-            }
-        }
+    // nextTurn() {
+    //     // Primero paso al player siguiente
+    //     this.nextPlayer();
+    //
+    //     // Si el siguiente es el jugador, no haré nada
+    //     if (this._currentPlayerId === null) {
+    //         console.log('Toca al jugador');
+    //         return {message: 'Your turn'};
+    //     }
+    //
+    //
+    //     // Devuelvo los resultados al jugador para que elija si ha de elegir o continue al siguiente turno
+    //     return result;
+    // }
 
-        // Si terminé la lista de playeres, entonces es que no había siguiente (di toda la vuelta) y le toca al jugador
-        if (end) {
-            this._currentPlayerId = null;
-        }
+    nextPlayer() {
+        let currentP = this.getPlayer(this._currentPlayerId);
+        let nIdx = (currentP.index + 1 <= this._players.length - 1) ? currentP.index + 1 : 0;
+        this._currentPlayerId = this._players[nIdx].name;
     }
 
     rollDice(max) {
         const min = 1;
         return min + Math.floor(Math.random() * (max - min + 1));
-    }
-
-    moveCells(number) {
-        const data = this.getPlayer(this._currentPlayerId);
-        const currentCellId = data.player.currentCellId;
-
-        // posición en el tablero de la celda actual
-        let position = cellOrder.indexOf(currentCellId);
-        // Avanzo las posiciones del dado
-        let pasoMeta = false;
-        for (let i = 0; i < number; i++) {
-            position++;
-            // Si me salgo del tablero... voy a la primera casilla y paso por meta
-            if (position > (cellOrder.length - 1)) {
-                position = 0;
-                pasoMeta = true;
-            }
-        }
-
-        data.player.currentCellId = cellOrder[position];
-        this.setPlayer(data);
-        return pasoMeta;
-    }
-
-    execCell() {
-        let msg = '', n = 0, corrupt = false;
-        const data = this.getPlayer(this._currentPlayerId);
-        const cell = this.getCell(data.player.currentCellId);
-
-        // Dependiendo del tipo de celda hago una cosa u otra
-        switch (cell.type) {
-            case 'police':
-                // x turnos
-                n = this.random(2, 4);
-                this._counters.police += n;
-                msg = 'Police: ' + n + ' turns';
-                break;
-            case 'inspector':
-                n = this.random(2, 4);
-                this._counters.inspector += n;
-                msg = 'Inspection: ' + n + ' turns';
-                break;
-            case 'mafia':
-                n = this.random(2, 4);
-                this._counters.mafia += n;
-                msg = 'Mafia: ' + n + ' turns';
-                break;
-            case 'corruption':
-                n = this.random(2, 4);
-                this._counters.corruption += n;
-                msg = 'Corruption: ' + n + ' turns';
-                break;
-            case 'extortion':
-                n = this.random(1, 4) * 500;
-                data.player.money -= n;
-                this.setPlayer(data);
-                msg = 'Extortion for $-' + n;
-                break;
-            case 'subsidy':
-                n = this.random(1, 4) * 1000;
-                data.player.money += n;
-                this.setPlayer(data);
-                msg = 'Subsidy for $' + n;
-                break;
-            case 'stock':
-                n = this.random(-2, 5) * 1000;
-                if (n === 0) {
-                    n = 1000;
-                }
-                this._money = this._money + n;
-                msg = 'Stock for $' + n;
-                break;
-            case 'card':
-                msg = '';
-                break;
-            case 'hotel':
-                if (!cell.owned) {
-                    break;
-                }
-
-                // Cojo dinero del player
-                if (data.player.money > 0) {
-                    // Nivel máximo 5 de la parte hotel
-                    let lvl = Math.min(cell.level, 5);
-                    // Cojo precio del hotel (solo parte de hotel)
-                    let price = cell.prices['hotel'][lvl];
-                    let alreadyDoubled = false;
-
-                    // Si hay que duplicar o hacer gratis hotel
-                    if (this._counters.inspector > 0) {
-                        // this._counters.inspector--;
-                        msg = 'Hotels shutdown due to inspection';
-                        break;
-                    }
-                    if (this._counters.corruption > 0) {
-                        // this._counters.corruption--;
-                        price = price * 2;
-                        alreadyDoubled = true;
-                        msg = 'Politician corruption doubled hotel prices. ';
-                    }
-
-                    // Los modificadores de celda
-                    if (cell.closed > 0) {
-                        cell.closed--;
-                        msg = 'This hotel is temporary closed';
-                        this.setCell(cell);
-                        break;
-                    }
-                    if (cell.special > 0 && !alreadyDoubled) {
-                        cell.special--;
-                        msg = 'This hotel is very popular and have prices doubled temporary';
-                        price = price * 2;
-                        this.setCell(cell);
-                    }
-
-                    data.player.money -= price;
-                    this._money += price;
-                    msg += 'Hotel: billed for ' + price;
-                } else {
-                    let lvl = cell.level;
-                    // Cojo precio del hotel (solo parte de hotel)
-                    let reward = cell.prices['hotel'][lvl];
-                    let alreadyFree = false;
-
-                    // Si el nivel del h+++ no es 6 o más no pasa nada especial, se devuelve algo de dinero
-                    if (lvl < 6) {
-                        reward = 100;
-                        msg = ' Player had no money and worked cleaning dishes. ';
-                    } else {
-                        // Si hay que duplicar o hacer gratis hotel
-                        if (this._counters.police > 0) {
-                            // this._counters.police--;
-                            msg = 'Parlour shutdown due to police raid';
-                            break;
-                        }
-                        if (this._counters.mafia > 0) {
-                            // this._counters.mafia--;
-                            reward = 0;
-                            alreadyFree = true;
-                            msg = 'Mafia forced parlour workers to work for free. ';
-                        }
-
-                        // Los modificadores de celda
-                        if (cell.closed > 0) {
-                            cell.closed--;
-                            msg = 'This parlour is temporary closed';
-                            this.setCell(cell);
-                            break;
-                        }
-                        if (cell.special > 0 && !alreadyFree) {
-                            cell.special--;
-                            reward = 0;
-                            msg = 'This parlour is very popular and made workers to work for free temporary. ';
-                            this.setCell(cell);
-                        }
-
-                        // Funcionamiento normal
-                        if ((cell.level === 6 && data.player.corruption < 6) || (cell.level === 7 && data.player.corruption < 9) || (cell.level === 8)) {
-                            data.player.corruption++;
-                        }
-                        // TODO aqui podría comprobar si corruption 10 para sacarle del juego
-                        corrupt = true;
-                    }
-
-                    data.player.money += reward;
-                    this._money -= reward;
-                    msg += 'Parlour: paid workers ' + reward;
-                }
-                this.setPlayer(data);
-                break;
-        }
-
-        return {message: msg, corrupt: corrupt};
     }
 
     random(min, max) {

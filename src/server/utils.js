@@ -94,4 +94,14 @@ const jsonifyArrayOfClasses = function (array) {
     return jsonA;
 };
 
-export default {saveImages, capitalizeFirstLetter, listRivalsAvailable, jsonifyArrayOfClasses};
+const rollDice = function (max) {
+    const min = 1;
+    return min + Math.floor(Math.random() * (max - min + 1));
+};
+
+const random = function (min, max) {
+    max = max + 1;
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
+export default {saveImages, capitalizeFirstLetter, listRivalsAvailable, jsonifyArrayOfClasses, random, rollDice};

@@ -2,8 +2,7 @@ import express from 'express';
 import {fileURLToPath} from 'node:url';
 import {dirname} from 'node:path';
 import multer from 'multer';
-import Game from './classes-anima/game.js';
-import utils from './utils.js';
+import Game from './classes-bar/game.js';
 import {createReadStream, readdirSync} from 'node:fs';
 import wrap from 'express-async-wrapper';
 
@@ -26,25 +25,33 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 
-// Lista de jugadores disponibles
-router.get('/players', (req, res) => {
-    const folders = utils.listRivalsAvailable();
-    res.json({players: folders});
-});
-
 // Empieza un juego
 router.post('/game', (req, res) => {
-    game = new Game(req.body.players);
+    game = new Game();
     res.json({data: game.json()});
 });
 // Devuelve estado de game
 router.get('/game', (req, res) => {
     res.json({data: game.json()});
 });
-// Siguiente fase del turno
-router.get('/game/phase', (req, res) => {
+
+// Siguiente tick
+router.get('/game/tick', (req, res) => {
     const result = game.nextPhase();
     res.json({data: game.json(), result: result});
+});
+
+// Compra jugador
+router.post('/player/buy/:ply', (req, res) => {
+    const result = game.buyPlayer(req.params.ply);
+
+    if (result === null) {
+        res.status(400).json({
+            error: 'Not enough money'
+        });
+        return;
+    }
+    res.json({data: game.json()});
 });
 
 

@@ -1,69 +1,94 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import {ApiAnimaService} from '../../services/api-anima.service';
+import {ApiBarService} from '../../services/api-bar.service';
 
 const maxChats = 12;
 const chatDelay = 500;
 
 @Component({
-    selector: 'app-game-anima',
-    templateUrl: './game-anima.component.html',
-    styleUrls: ['./game-anima.component.scss']
+    selector: 'app-game-bar',
+    templateUrl: './game-bar.component.html',
+    styleUrls: ['./game-bar.component.scss']
 })
-export class GameAnimaComponent implements OnInit {
-    players: any = [];
-    you: any = {};
-    game: any = {board: {cells: []}};
+export class GameBarComponent implements OnInit {
+    market: any = [];
+    game: any = null;
+    loading = false;
     previewCard: any = null;
+
+    playersInRestroom: any = [];
+
+    ///////
+    you: any = {};
     currentImgs: any = {};
     chats: any[] = [];
-    discardedCards: any[] = [];
-    loading = false;
     endGame = false;
     winnerYou = false;
-    selectedCell: any = {type: '', level: 1};
-    cellsRivals: any = {};
-    canBuy = false;
-    canUpgrade = false;
-    firstTurn = true;
     message = '';
-    police = 0;
-    inspector = 0;
-    mafia = 0;
-    corruption = 0;
 
-    constructor(private apiAnimaService: ApiAnimaService, private toast: ToastrService, private router: Router, public dialog: MatDialog) {
+    constructor(private apiBarService: ApiBarService, private toast: ToastrService, private router: Router, public dialog: MatDialog) {
     }
 
     ngOnInit(): void {
-        this.refresh(true);
-        this.previewCard = {type: 'general', image: 'backcard'};
+        this.refresh();
+        this.previewCard = {};
     }
 
-    refresh(first: boolean = false) {
+    refresh() {
         this.loading = true;
-        this.apiAnimaService.getGame().subscribe({
+        this.apiBarService.getGame().subscribe({
             next: (response: any) => {
-                this.game = response.data;
-                this.players = this.game.players;
-                this.game.players = undefined;
+                this.processGameData(response);
                 this.loading = false;
 
-                console.log(this.game);
-                console.log(this.players);
-
-                /*if (response.data.final) {
-                    this.endGame = response.data.final.endGame;
-                    this.winnerYou = response.data.final.areYouWinner;
-                }*/
                 this.nextTurn();
             },
             error: (err: Error) => console.error('Error getting game data: ' + err)
         });
     }
+
+    processGameData(response: any) {
+        this.game = response.data;
+        this.market = response.data.market;
+        this.playersInRestroom = this.playersInRestroom.concat(response.data.house.restroom.players);
+        console.log(this.game);
+    }
+
+    openMarket() {
+        const dialogRef = this.dialog.open(MarketBarDialog, {
+            width: '90vw',
+            height: '90vh',
+            data: {url: 'http://localhost:7777/players/'}
+        });
+
+        dialogRef.componentInstance.messageEvent.subscribe((playerId) => {
+            this.buyPlayer(playerId);
+        });
+    }
+
+    buyPlayer(playerId: any) {
+        this.apiBarService.postBuyPlayer(playerId).subscribe({
+            next: (response: any) => {
+                this.processGameData(response);
+            },
+            error: (err: Error) => console.error('Error getting game data: ' + err)
+        });
+    }
+
+
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
 
     nextTurn() {
         /*// Deselecciono
@@ -126,25 +151,25 @@ export class GameAnimaComponent implements OnInit {
     }
 
     changeImg(pId: any) {
-        const max = this.players[pId]['imagesSet'][this.players[pId]['currentStage']].length - 1;
+        const max = this.market[pId]['imagesSet'][this.market[pId]['currentStage']].length - 1;
         // Rotamos imgs
-        if (this.currentImgs[this.players[pId]['name']] === undefined) {
-            this.currentImgs[this.players[pId]['name']] = 0;
+        if (this.currentImgs[this.market[pId]['name']] === undefined) {
+            this.currentImgs[this.market[pId]['name']] = 0;
         } else {
-            this.currentImgs[this.players[pId]['name']]++;
+            this.currentImgs[this.market[pId]['name']]++;
         }
 
-        if (this.currentImgs[this.players[pId]['name']] > max) {
-            this.currentImgs[this.players[pId]['name']] = 0;
+        if (this.currentImgs[this.market[pId]['name']] > max) {
+            this.currentImgs[this.market[pId]['name']] = 0;
         }
     }
 
     getImg(pId: any, urlWrap: boolean = true) {
-        if (!this.players[pId]) return '';
+        if (!this.market[pId]) return '';
 
         let cStage = '';
         // console.log(JSON.stringify(rival));
-        switch (this.players[pId]['corruption']) {
+        switch (this.market[pId]['corruption']) {
             case 0:
                 cStage += 5;
                 break;
@@ -166,24 +191,24 @@ export class GameAnimaComponent implements OnInit {
         }
         // console.log(cStage);
         if (cStage === '') {
-            console.debug('cStage undefined ' + this.players[pId].name);
+            console.debug('cStage undefined ' + this.market[pId].name);
         }
         // console.log(JSON.stringify(rival));
         // Rotamos imgs
-        if (this.currentImgs[this.players[pId]['name']] === undefined) {
-            this.currentImgs[this.players[pId]['name']] = Math.floor(Math.random() * this.players[pId]['imagesSet'][cStage].length);
+        if (this.currentImgs[this.market[pId]['name']] === undefined) {
+            this.currentImgs[this.market[pId]['name']] = Math.floor(Math.random() * this.market[pId]['imagesSet'][cStage].length);
         }
         // console.log(rival);
-        const theImg = this.players[pId]['imagesSet'][cStage][this.currentImgs[this.players[pId]['name']]];
+        const theImg = this.market[pId]['imagesSet'][cStage][this.currentImgs[this.market[pId]['name']]];
         if (theImg === undefined) {
             console.debug('IMG undefined:');
-            console.debug(this.players[pId]);
+            console.debug(this.market[pId]);
             console.debug(this.currentImgs);
         }
         if (urlWrap) {
-            return 'url("http://localhost:7777/players/' + this.players[pId]['name'] + '/' + theImg + '")';
+            return 'url("http://localhost:7777/players/' + this.market[pId]['name'] + '/' + theImg + '")';
         } else {
-            return 'http://localhost:7777/players/' + this.players[pId]['name'] + '/' + theImg;
+            return 'http://localhost:7777/players/' + this.market[pId]['name'] + '/' + theImg;
         }
     }
 
@@ -196,9 +221,9 @@ export class GameAnimaComponent implements OnInit {
             }
 
             if (!forDomImg) {
-                return 'url("http://localhost:7777/anima/' + card.type + '/' + card.image + extras + '.jpg")';
+                return 'url("http://localhost:7777/bar/' + card.type + '/' + card.image + extras + '.jpg")';
             } else {
-                return 'http://localhost:7777/anima/' + card.type + '/' + card.image + extras + '.jpg';
+                return 'http://localhost:7777/bar/' + card.type + '/' + card.image + extras + '.jpg';
             }
         }
         return '';
@@ -211,7 +236,7 @@ export class GameAnimaComponent implements OnInit {
                 extras = this.previewCard.charLevel;
             }
 
-            return 'http://localhost:7777/anima/' + this.previewCard['type'] + '/' + this.previewCard['image'] + extras + '.jpg';
+            return 'http://localhost:7777/bar/' + this.previewCard['type'] + '/' + this.previewCard['image'] + extras + '.jpg';
         }
         return '';
     }
@@ -227,26 +252,26 @@ export class GameAnimaComponent implements OnInit {
 
 
     isActivePlayer(pId: number) {
-        if (!this.players[pId]) return false;
-        return this.players[pId] && this.game.currentPlayerId === this.players[pId].id;
+        if (!this.market[pId]) return false;
+        return this.market[pId] && this.game.currentPlayerId === this.market[pId].id;
     }
 
     getPlayerName(pId: number) {
-        if (!this.players[pId]) return '';
-        return this.players[pId].name;
+        if (!this.market[pId]) return '';
+        return this.market[pId].name;
     }
 
     getPlayerHealth(pId: number) {
-        if (!this.players[pId]) return 0;
-        console.log('corru ' + (7 - this.players[pId].corruption) * 100 / 7);
-        return (7 - this.players[pId].corruption) * 100 / 7;
+        if (!this.market[pId]) return 0;
+        console.log('corru ' + (7 - this.market[pId].corruption) * 100 / 7);
+        return (7 - this.market[pId].corruption) * 100 / 7;
     }
 
     getPlayerHealthColor(pId: number) {
-        if (!this.players[pId]) return '#666';
-        console.log(JSON.stringify(this.players[pId]));
+        if (!this.market[pId]) return '#666';
+        console.log(JSON.stringify(this.market[pId]));
         let color;
-        switch (7 - this.players[pId].corruption) {
+        switch (7 - this.market[pId].corruption) {
             case 7:
             case 6:
                 color = '#388e3c';
@@ -270,7 +295,7 @@ export class GameAnimaComponent implements OnInit {
 
 
     fullViewImg(img: string) {
-        this.dialog.open(FullViewAnimaDialog, {
+        this.dialog.open(FullViewBarDialog, {
             width: '90vw',
             height: '100vh',
             data: {
@@ -294,8 +319,8 @@ export class GameAnimaComponent implements OnInit {
                 cat = 5;
                 break;
         }
-        let videoUrl = 'http://localhost:7777/api/m/video/' + rival['name'] + '/' + cat;
-        this.dialog.open(FullViewVideoAnimaDialog, {
+        let videoUrl = 'http://localhost:7777/api/b/video/' + rival['name'] + '/' + cat;
+        this.dialog.open(FullViewVideoBarDialog, {
             width: '90vw',
             height: '95vh',
             data: {
@@ -313,7 +338,7 @@ export class GameAnimaComponent implements OnInit {
     }
 
     return() {
-        const dialogRef = this.dialog.open(ConfirmAnimaDialog);
+        const dialogRef = this.dialog.open(ConfirmBarDialog);
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
@@ -325,18 +350,18 @@ export class GameAnimaComponent implements OnInit {
 }
 
 @Component({
-    selector: 'confirm-anima-dialog',
-    templateUrl: 'confirm-anima-dialog.html'
+    selector: 'confirm-bar-dialog',
+    templateUrl: 'confirm-bar-dialog.html'
 })
-export class ConfirmAnimaDialog {
+export class ConfirmBarDialog {
 }
 
 
 @Component({
-    selector: 'fullview-anima-dialog',
-    templateUrl: 'fullview-anima-dialog.html'
+    selector: 'fullview-bar-dialog',
+    templateUrl: 'fullview-bar-dialog.html'
 })
-export class FullViewAnimaDialog {
+export class FullViewBarDialog {
     theImg;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private domSanitizer: DomSanitizer) {
@@ -345,13 +370,51 @@ export class FullViewAnimaDialog {
 }
 
 @Component({
-    selector: 'fullviewvideo-anima-dialog',
-    templateUrl: 'fullviewvideo-anima-dialog.html'
+    selector: 'fullviewvideo-bar-dialog',
+    templateUrl: 'fullviewvideo-bar-dialog.html'
 })
-export class FullViewVideoAnimaDialog {
+export class FullViewVideoBarDialog {
     theVid;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private domSanitizer: DomSanitizer) {
         this.theVid = this.domSanitizer.bypassSecurityTrustResourceUrl(data.source);
+    }
+}
+
+
+@Component({
+    selector: 'market-bar-dialog',
+    templateUrl: 'market-bar-dialog.html',
+    styleUrls: ['./market-bar-dialog.scss']
+})
+export class MarketBarDialog implements OnInit {
+    players: any;
+    imgRoute;
+    money: any;
+    messageEvent = new EventEmitter<string>();
+
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private apiBarService: ApiBarService) {
+        this.imgRoute = data.url;
+    }
+
+    ngOnInit(): void {
+        this.getPlayerList();
+    }
+
+    buy(playerId: any) {
+        this.messageEvent.emit(playerId);
+        setTimeout(() => {
+            this.getPlayerList()
+        }, 500);
+    }
+
+    getPlayerList() {
+        this.apiBarService.getGame().subscribe({
+            next: (response: any) => {
+                this.players = response.data.market;
+                this.money = response.data.money;
+            },
+            error: (err: Error) => console.error('Error getting game data: ' + err)
+        });
     }
 }

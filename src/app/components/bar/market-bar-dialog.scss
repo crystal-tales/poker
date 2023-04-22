@@ -1,0 +1,106 @@
+.market-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+h1 {
+    font-weight: bold
+}
+
+.card {
+    width: 15%;
+    margin: 10px;
+    background-color: #232121;
+}
+
+.subtitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.name {
+    font-weight: bold;
+    color: whitesmoke;
+}
+
+.woman {
+    color: hotpink;
+}
+
+.man {
+    color: mediumpurple;
+}
+
+.separator {
+    width: 20px;
+}
+
+.ageT {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: greenyellow;
+}
+
+.ageY {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: orange;
+}
+
+.ageM {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: crimson;
+}
+
+.tits {
+    font-weight: bold;
+    color: pink;
+    width: 62px;
+}
+
+.tits .mat-icon {
+    vertical-align: bottom;
+}
+
+.etnia1 .mat-icon {
+    color: #f6f8fa;
+}
+
+.etnia2 .mat-icon {
+    color: gold;
+}
+
+.etnia3 .mat-icon {
+    color: #c98d5b;
+}
+
+.avatar .mat-icon {
+    font-size: 2rem;
+    height: 40px;
+    width: 40px;
+}
+
+.skill-container {
+    column-count: 3;
+    margin-top: 10px;
+}
+
+.skill-container span {
+    font-size: 0.6rem;
+    color: whitesmoke;
+}
+
+.buy-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.salary {
+    color: #87b75b;
+    font-size: 0.8rem;
+}

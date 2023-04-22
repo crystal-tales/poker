@@ -5,20 +5,50 @@
     height: 100vh;
 }
 
-.board-container {
+.house-container {
     width: 80vw;
 }
 
 .sideboard-container {
     width: 20vw;
-    background-image: url("http://localhost:7777/anima/general/wood.jpg");
-    background-size: 200px;
+    background-color: #666666;
+    box-shadow: inset 0px 0px 30px 0px #000;
     padding: 20px;
 }
 
 .sideboard-game {
-    background-color: rgba(2, 2, 2, 0.2);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-shadow: inset 0px 0px 10px 0px #000;
+    background-color: rgba(2, 2, 2, 0.5);
+    padding: 5px 10px;
 }
+
+.money {
+    font-size: 1.3rem;
+    color: #87b75b;
+    font-weight: bold;
+}
+
+.time {
+    font-size: 1.3rem;
+    color: whitesmoke;
+}
+
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
+/////////////////////////
 
 .sideboard-actions {
     background-color: rgba(2, 2, 2, 0.2);

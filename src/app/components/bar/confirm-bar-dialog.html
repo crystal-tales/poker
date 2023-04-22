@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Start a new game?</h1>
+<div mat-dialog-content>
+    <p>Are you sure you want to end this game and start a new one?</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-button color="primary" mat-dialog-close cdkFocusInitial>Continue this game</button>
+    <button mat-button color="warn" [mat-dialog-close]="true">Start a new one</button>
+</div>

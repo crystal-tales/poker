@@ -1,16 +1,6 @@
 <div class="global-container">
     <div class="board-container">
         <div class="players-top-container">
-            <div class="player-two-container">
-                <div class="player-image"
-                     (click)="changeImg(1)"
-                     (contextmenu)="fullViewImg(getImg(1, false))"
-                     [style.background-image]="getImg(1)">
-                    <div class="player-name" [class.acttive]="isActivePlayer(1)">
-                        {{getPlayerName(1)}}
-                    </div>
-                </div>
-            </div>
             <div class="player-three-container">
                 <div class="player-image"
                      (click)="changeImg(2)"
@@ -18,6 +8,16 @@
                      [style.background-image]="getImg(2)">
                     <div class="player-name" [class.acttive]="isActivePlayer(2)">
                         {{getPlayerName(2)}}
+                    </div>
+                </div>
+            </div>
+            <div class="player-four-container">
+                <div class="player-image"
+                     (click)="changeImg(3)"
+                     (contextmenu)="fullViewImg(getImg(3, false))"
+                     [style.background-image]="getImg(3)">
+                    <div class="player-name" [class.acttive]="isActivePlayer(3)">
+                        {{getPlayerName(3)}}
                     </div>
                 </div>
             </div>
@@ -56,6 +56,17 @@
 
 
         <div class="players-bottom-container">
+            <div class="player-two-container">
+                <div class="player-image"
+                     (click)="changeImg(1)"
+                     (contextmenu)="fullViewImg(getImg(1, false))"
+                     [style.background-image]="getImg(1)">
+                    <div class="player-name" [class.acttive]="isActivePlayer(1)">
+                        {{getPlayerName(1)}}
+                    </div>
+                </div>
+            </div>
+
             <div class="player-one-container">
                 <div class="player-image"
                      (click)="changeImg(0)"
@@ -67,16 +78,18 @@
                 </div>
                 <div class="player-stats">
                     <div class="player-hand" matTooltip="Cards in hand" matTooltipShowDelay="1500">
-                        <mat-icon>view_carousel</mat-icon>
+                        <mat-icon matTooltip="Player hand" matTooltipShowDelay="1500">view_carousel</mat-icon>
                         {{players[0]?.hand.length}}
                     </div>
                     <div class="player-corruption" matTooltip="Corruption" matTooltipShowDelay="1000">
                         <mat-progress-bar mode="determinate" class="anima"
                                           [style.color]="getPlayerHealthColor(0)"
+                                          matTooltip="Corruption"
+                                          matTooltipShowDelay="1500"
                                           [value]="getPlayerHealth(0)">
                         </mat-progress-bar>
                     </div>
-                    <div class="player-mission" matTooltip="Mission" matTooltipShowDelay="1000">
+                    <div class="player-mission" matTooltip="Mission" matTooltipShowDelay="1500">
                         <img [hidden]="!players[0]?.mission"
                              [src]="getCardImg(players[0]?.mission, true)"
                              (mouseover)="hoverCard(players[0]?.mission)"
@@ -102,20 +115,28 @@
                          [style.background-image]="getCardImg(players[0]?.characters[3])"></div>
                 </div>
             </div>
-            <div class="player-four-container">
-                <div class="player-image"
-                     (click)="changeImg(3)"
-                     (contextmenu)="fullViewImg(getImg(3, false))"
-                     [style.background-image]="getImg(3)">
-                    <div class="player-name" [class.acttive]="isActivePlayer(3)">
-                        {{getPlayerName(3)}}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <div class="sideboard-container">
-        <img [src]="getPreviewImg()"/>
+        <div class="sideboard-game">
+            <p>pepe</p>
+        </div>
+
+        <div class="big-preview">
+            <img [src]="getPreviewImg()"/>
+        </div>
+
+        <div class="sideboard-player-hand" *ngIf="players[0]">
+            <mat-icon matTooltip="Player hand" matTooltipShowDelay="1500">view_carousel</mat-icon>
+            <img *ngFor="let ch of players[0].hand"
+                 [src]="getCardImg(ch, true)"
+                 (mouseover)="hoverCard(ch)"
+                 (mouseleave)="hoverCard(null)"/>
+        </div>
+
+        <div class="sideboard-actions">
+            <p>pepe</p>
+        </div>
     </div>
 </div>
 

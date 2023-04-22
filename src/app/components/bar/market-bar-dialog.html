@@ -1,0 +1,149 @@
+<h1 mat-dialog-title>Do you see something you like?</h1>
+<div class="market-container">
+    <mat-card class="card" *ngFor="let p of players">
+        <mat-card-header>
+            <div mat-card-avatar class="avatar">
+                <mat-icon *ngIf="p.stats.sex===1" class="woman">female</mat-icon>
+                <mat-icon *ngIf="p.stats.sex===2" class="man">transgender</mat-icon>
+            </div>
+            <mat-card-title class="name">{{ p.name }}</mat-card-title>
+            <mat-card-subtitle class="subtitle">
+                <p *ngIf="p.stats.age === 1" class="ageT" matTooltip="Teen">T</p>
+                <p *ngIf="p.stats.age === 2" class="ageY" matTooltip="Young">Y</p>
+                <p *ngIf="p.stats.age === 3" class="ageM" matTooltip="Milf">M</p>
+                <div class="separator"></div>
+                <p *ngIf="p.stats.tits === 1" class="tits" matTooltip="Small tits">
+                    <mat-icon>join_inner</mat-icon>
+                    S
+                </p>
+                <p *ngIf="p.stats.tits === 2" class="tits" matTooltip="Medium tits">
+                    <mat-icon>join_inner</mat-icon>
+                    L
+                </p>
+                <p *ngIf="p.stats.tits === 3" class="tits" matTooltip="Big tits">
+                    <mat-icon>join_inner</mat-icon>
+                    XL
+                </p>
+                <p *ngIf="p.stats.tits === 4" class="tits" matTooltip="Enormous tits">
+                    <mat-icon>join_inner</mat-icon>
+                    XXL
+                </p>
+                <div class="separator"></div>
+                <p *ngIf="p.stats.etnia === 1" class="etnia1" matTooltip="White">
+                    <mat-icon>face</mat-icon>
+                </p>
+                <p *ngIf="p.stats.etnia === 2" class="etnia2" matTooltip="Asian">
+                    <mat-icon>face</mat-icon>
+                </p>
+                <p *ngIf="p.stats.etnia === 3" class="etnia3" matTooltip="Black">
+                    <mat-icon>face</mat-icon>
+                </p>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image *ngIf="p.portrait" [src]="imgRoute + p.name + '/p.jpg'">
+        <img mat-card-image *ngIf="!p.portrait" [src]="imgRoute + '/noimage.jpg'">
+        <mat-card-content class="skill-container">
+                <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.flirt}}%">Flirt
+                    <mat-progress-bar [color]="p.skills.flirt >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.flirt"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.strip}}%">Strip
+                    <mat-progress-bar [color]="p.skills.strip >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.strip"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.facial}}%">Facial
+                    <mat-progress-bar [color]="p.skills.facial >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.facial"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.vaginal}}%">Vaginal
+                    <mat-progress-bar [color]="p.skills.vaginal >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.vaginal"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.anal}}%">Anal
+                    <mat-progress-bar [color]="p.skills.anal >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.anal"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.creampie}}%">Creampie
+                    <mat-progress-bar [color]="p.skills.creampie >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.creampie"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.lesbian}}%">Lesbian
+                    <mat-progress-bar [color]="p.skills.lesbian >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.lesbian"></mat-progress-bar></span>
+            <span class="skill" matTooltipShowDelay="1500" matTooltip="{{p.skills.interracial}}%">Interracial
+                    <mat-progress-bar [color]="p.skills.interracial >= 50 ? 'accent' : 'warn'" mode="determinate"
+                                      [value]="p.skills.interracial"></mat-progress-bar></span>
+        </mat-card-content>
+        <mat-card-actions class="buy-button">
+            <div class="salary">
+                Salary ${{p.salary}}
+            </div>
+            <button mat-raised-button color="primary" class="negrita" (click)="buy(p.id)" [disabled]="money < p.price">
+                Buy for ${{p.price}}</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+<!--
+{
+    "id": "Vana",
+    "name": "Vana",
+    "imagesSet": {
+        "0": [
+            "151.jpg",
+            "152.jpg",
+            "153.jpg",
+            "154.jpg",
+            "155.jpg",
+            "156.jpg"
+            ],
+            "1": [
+            "141.jpg",
+            "142.jpg",
+            "143.jpg",
+            "144.jpg",
+            "145.jpg"
+            ],
+            "2": [
+            "131.jpg",
+            "132.jpg",
+            "133.jpg",
+            "134.jpg",
+            "135.jpg"
+            ],
+            "3": [
+            "121.jpg",
+            "122.jpg",
+            "123.jpg",
+            "124.jpg"
+            ],
+            "4": [
+            "111.jpg",
+            "112.jpg",
+            "113.jpg",
+            "114.jpg",
+            "115.jpg"
+            ],
+            "5": [
+            "101.jpg",
+            "102.jpg",
+            "103.jpg",
+            "104.jpg"
+            ]
+        },
+"portrait": true,
+"price": 0,
+"salary": 0,
+"location": "",
+"stats": {
+"stamina": 100,
+"mood": 100,
+"age": 3,
+"tits": 3,
+"etnia": 1,
+"sex": 1
+},
+"skills": {
+"flirt": 0,
+"strip": 0,
+"vaginal": 0,
+"anal": 0,
+"facial": 0,
+"creampie": 0,
+"lesbian": 0,
+"interracial": 0
+}
+    }-->

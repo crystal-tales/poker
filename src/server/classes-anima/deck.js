@@ -91,24 +91,28 @@ class Deck {
     }
 
     drawMission() {
-        let m = this._missions.shift();
-        return m;
+        let card = this._missions.shift();
+        return card === undefined ? null : card;
     }
 
     drawPlace() {
-        return this._places.shift();
+        let card = this._places.shift();
+        return card === undefined ? null : card;
     }
 
     drawSpell() {
-        return this._spells.shift();
+        let card = this._spells.shift();
+        return card === undefined ? null : card;
     }
 
     drawCharacter() {
-        return this._characters.shift();
+        let card = this._characters.shift();
+        return card === undefined ? null : card;
     }
 
     drawGuardian() {
-        return this._guardians.shift();
+        let card = this._guardians.shift();
+        return card === undefined ? null : card;
     }
 
     returnMission(card) {
