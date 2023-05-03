@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Router} from '@angular/router';
@@ -17,9 +17,22 @@ export class GameBarComponent implements OnInit {
     market: any = [];
     game: any = null;
     loading = false;
-    previewCard: any = null;
+    previewPlayer: any = null;
+    previewRotation: number = 0;
+    paused = false;
 
     playersInRestroom: any = [];
+    playersInBar: any = [];
+    playersInStage: any = [];
+    playersInPrivate: any = [];
+    playersInBedroom: any = [];
+    playersInSchool: any = [];
+    playersInDungeon: any = [];
+
+    clientsInBar: any = [];
+    clientsInStage: any = [];
+    clientsInPrivate: any = [];
+    clientsInBedroom: any = [];
 
     ///////
     you: any = {};
@@ -28,13 +41,18 @@ export class GameBarComponent implements OnInit {
     endGame = false;
     winnerYou = false;
     message = '';
+    roomNumber = 0;
 
     constructor(private apiBarService: ApiBarService, private toast: ToastrService, private router: Router, public dialog: MatDialog) {
     }
 
     ngOnInit(): void {
         this.refresh();
-        this.previewCard = {};
+        this.previewPlayer = {};
+
+        setInterval(() => {
+            this.nextHour();
+        }, 5000);
     }
 
     refresh() {
@@ -43,8 +61,6 @@ export class GameBarComponent implements OnInit {
             next: (response: any) => {
                 this.processGameData(response);
                 this.loading = false;
-
-                this.nextTurn();
             },
             error: (err: Error) => console.error('Error getting game data: ' + err)
         });
@@ -53,8 +69,38 @@ export class GameBarComponent implements OnInit {
     processGameData(response: any) {
         this.game = response.data;
         this.market = response.data.market;
-        this.playersInRestroom = this.playersInRestroom.concat(response.data.house.restroom.players);
+        //players
+        this.playersInRestroom = response.data.house.restroom.players;
+        this.playersInBar = response.data.house.bar.players;
+        this.playersInStage = response.data.house.stage.players;
+        this.playersInPrivate = response.data.house.private.players;
+        this.playersInBedroom = response.data.house.bedroom.players;
+        this.playersInSchool = response.data.house.school.players;
+        this.playersInDungeon = response.data.house.dungeon.players;
+        //clients
+        this.clientsInBar = response.data.house.bar.clients;
+        this.clientsInStage = response.data.house.stage.clients;
+        this.clientsInPrivate = response.data.house.private.clients;
+        this.clientsInBedroom = response.data.house.bedroom.clients;
+
+        console.log('GAME');
         console.log(this.game);
+    }
+
+    nextHour() {
+        // If not paused apply next tick
+        if (!this.paused) {
+            this.apiBarService.getNextHour().subscribe({
+                next: (response: any) => {
+                    this.processGameData(response);
+                },
+                error: (err: Error) => console.error('Error getting game next hour: ' + err)
+            });
+        }
+    }
+
+    resumeOrPause() {
+        this.paused = !this.paused;
     }
 
     openMarket() {
@@ -78,77 +124,55 @@ export class GameBarComponent implements OnInit {
         });
     }
 
+    setPreviewImg(player: any, room: number) {
+        let isNew = false;
+        if (!this.previewPlayer['id'] || this.previewPlayer['id'] !== player['id']) {
+            isNew = true;
+        }
+        this.previewPlayer = player;
 
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-    ///////////////////////////
-
-    nextTurn() {
-        /*// Deselecciono
-        this.selectedCell = {type: '', level: 1};
-        this.message = '';
-
-        if (this.firstTurn) {
-            this.firstTurn = false;
-            this.checkRivalsInCells();
-            this.checkCounters();
-            return;
+        if (isNew) {
+            this.previewRotation = 0;
+        } else {
+            this.rotatePreviewImg();
         }
 
-        this.apiAnimaService.getNewTurn().subscribe({
-            next: (response: any) => {
-                this.game = response.data.game;
-                this.game.players = response.data.players;
-                if (response.message) {
-                    this.message = response.message;
-                }
-                this.checkRivalsInCells();
-                this.checkCounters();
-
-                // Si cambió la corrupción mostraré resultados
-                console.log(response);
-                if (response.corrupt) {
-                    const r = this.getRival(this.game.currentRival);
-                    console.log(r);
-                    if (r !== null) {
-                        if (r['corruption'] < 4) {
-                            this.fullViewImg(this.getImg(r, false));
-                        } else {
-                            this.fullViewVideo(r);
-                        }
-                    }
-                }
-            },
-            error: (err: Error) => console.error('Error going to next turn: ' + err)
-        });*/
+        this.roomNumber = room;
+        console.log('+++++++++');
+        console.log(this.previewPlayer);
+        console.log('rotation: ' + this.previewRotation);
+        console.log('-----------');
     }
 
-    getRival(id: any) {
-        /*let ret = null;
-        this.game.players.forEach((rival: any) => {
-            if (rival.name == id) {
-                ret = rival;
-            }
-        });
-        return ret;*/
+    getPreviewImg() {
+        if (this.previewPlayer && this.previewPlayer['images']) {
+            // TODO elegir stage de imagen
+
+            return 'http://localhost:7777/players/' + this.previewPlayer['id'] + '/' + this.previewPlayer['images'][this.previewPlayer['selectedSet']][0][this.previewRotation];
+        }
+        return '';
     }
 
-    checkRivalsInCells() {
-        /*this.cellsRivals = {};
-        this.game.players.forEach((rival: any) => {
-            if (!this.cellsRivals[rival.currentCellId]) {
-                this.cellsRivals[rival.currentCellId] = [];
-            }
-            this.cellsRivals[rival.currentCellId].push({color: rival.color, name: rival.name});
-        });*/
+    rotatePreviewImg() {
+        if (this.previewPlayer['images'][this.previewPlayer['selectedSet']][this.roomNumber].length <= this.previewRotation + 1) {
+            this.previewRotation = 0;
+        } else {
+            this.previewRotation++;
+        }
     }
+
+
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+
 
     changeImg(pId: any) {
         const max = this.market[pId]['imagesSet'][this.market[pId]['currentStage']].length - 1;
@@ -229,71 +253,6 @@ export class GameBarComponent implements OnInit {
         return '';
     }
 
-    getPreviewImg() {
-        if (this.previewCard) {
-            let extras = '';
-            if (this.previewCard.type === 'character') {
-                extras = this.previewCard.charLevel;
-            }
-
-            return 'http://localhost:7777/bar/' + this.previewCard['type'] + '/' + this.previewCard['image'] + extras + '.jpg';
-        }
-        return '';
-    }
-
-    hoverCard(card: any) {
-        console.log(card);
-        if (card) {
-            this.previewCard = card;
-        } else {
-            this.previewCard = {type: 'general', image: 'backcard'};
-        }
-    }
-
-
-    isActivePlayer(pId: number) {
-        if (!this.market[pId]) return false;
-        return this.market[pId] && this.game.currentPlayerId === this.market[pId].id;
-    }
-
-    getPlayerName(pId: number) {
-        if (!this.market[pId]) return '';
-        return this.market[pId].name;
-    }
-
-    getPlayerHealth(pId: number) {
-        if (!this.market[pId]) return 0;
-        console.log('corru ' + (7 - this.market[pId].corruption) * 100 / 7);
-        return (7 - this.market[pId].corruption) * 100 / 7;
-    }
-
-    getPlayerHealthColor(pId: number) {
-        if (!this.market[pId]) return '#666';
-        console.log(JSON.stringify(this.market[pId]));
-        let color;
-        switch (7 - this.market[pId].corruption) {
-            case 7:
-            case 6:
-                color = '#388e3c';
-                break;
-            case 5:
-            case 4:
-            case 3:
-                color = '#d9940e';
-                break;
-            case 2:
-            case 1:
-                color = '#d32f2f';
-                break;
-            case 0:
-                color = '#000'
-                break;
-        }
-        console.log(color);
-        return color;
-    }
-
-
     fullViewImg(img: string) {
         this.dialog.open(FullViewBarDialog, {
             width: '90vw',
@@ -330,22 +289,23 @@ export class GameBarComponent implements OnInit {
         return false;
     }
 
+    /*
 
-    newGame() {
-        this.router.navigate(['/']).catch(e => {
-            console.error(e);
-        });
-    }
+        newGame() {
+            this.router.navigate(['/']).catch(e => {
+                console.error(e);
+            });
+        }
 
-    return() {
-        const dialogRef = this.dialog.open(ConfirmBarDialog);
+        return() {
+            const dialogRef = this.dialog.open(ConfirmBarDialog);
 
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.newGame();
-            }
-        });
-    }
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.newGame();
+                }
+            });
+        }*/
 
 }
 
@@ -383,6 +343,141 @@ export class FullViewVideoBarDialog {
 
 
 @Component({
+    selector: 'person-card',
+    templateUrl: 'person-card.html',
+    styleUrls: ['./person-card.scss']
+})
+export class PersonCard {
+    @Input() person: any;
+    @Input() type: any;
+
+    constructor() {
+    }
+
+    getMood(mood: any) {
+        let sentiment = '', color = '', text = '';
+        if (mood > 80) {
+            sentiment = 'sentiment_very_satisfied';
+            color = '#27e100'
+            text = 'Happy';
+        }
+        if (mood <= 80 && mood > 60) {
+            sentiment = 'sentiment_satisfied';
+            color = '#008af3'
+            text = 'Satisfied';
+        }
+        if (mood <= 60 && mood > 40) {
+            sentiment = 'sentiment_neutral';
+            color = '#ffdd00'
+            text = 'Normal';
+        }
+        if (mood < 40 && mood > 20) {
+            sentiment = 'sentiment_dissatisfied';
+            color = '#de7100'
+            text = 'Sad';
+        }
+        if (mood < 20) {
+            sentiment = 'sentiment_very_dissatisfied';
+            color = '#e70000'
+            text = 'Angry';
+        }
+        return {sentiment, color, text};
+    }
+
+    getStamina(stamina: any) {
+        let color = '', text = '';
+        if (stamina > 60) {
+            color = '#27e100'
+            text = 'Rested';
+        }
+        if (stamina <= 60 && stamina > 30) {
+            color = '#ffdd00'
+            text = 'Tired';
+        }
+        if (stamina < 30) {
+            color = '#e70000'
+            text = 'Exhausted';
+        }
+        return {color, text};
+    }
+
+    getWait(wait: any) {
+        let color = '',
+            value = wait * 2 * 10;
+        if (wait > 1) {
+            color = '#27e100'
+        }
+        if (wait <= 1) {
+            color = '#e70000'
+        }
+        return {color, value};
+    }
+
+    getClientTooltip(client: any) {
+        let txt = [];
+        txt.push(client.name);
+
+        let etniaT = '', ageT = '', sexT = '', titsT = '';
+        switch (client.prefs.sex) {
+            case 1:
+                sexT = 'females';
+                break;
+            case 2:
+                sexT = 'futas';
+                break;
+        }
+        switch (client.prefs.races) {
+            case 1:
+                etniaT = 'white';
+                break;
+            case 2:
+                etniaT = 'asian';
+                break;
+            case 3:
+                etniaT = 'black';
+                break;
+        }
+        switch (client.prefs.tits) {
+            case 1:
+                titsT = 'small';
+                break;
+            case 2:
+                titsT = 'normal';
+                break;
+            case 3:
+                titsT = 'big';
+                break;
+            case 4:
+                titsT = 'massive';
+                break;
+        }
+        switch (client.prefs.age) {
+            case 1:
+                ageT = 'teens';
+                break;
+            case 2:
+                ageT = 'youngs';
+                break;
+            case 3:
+                ageT = 'milfs';
+                break;
+        }
+        txt.push('Loves ' + etniaT + ' ' + ageT + ' ' + sexT + ' with ' + titsT + ' tits');
+
+        let prefs: any = [[], [], [], [], [], []];
+        Object.keys(client.prefs).forEach((pf) => {
+            if (!(['age', 'sex', 'tits', 'etnia'].includes(pf))) {
+                prefs[client.prefs[pf]].push(pf);
+            }
+        });
+        txt.push('Crazy about: ' + prefs[5].join(', '));
+        txt.push('Also likes: ' + prefs[4].join(', '));
+
+        return txt;
+    }
+}
+
+@Component({
     selector: 'market-bar-dialog',
     templateUrl: 'market-bar-dialog.html',
     styleUrls: ['./market-bar-dialog.scss']
@@ -392,6 +487,7 @@ export class MarketBarDialog implements OnInit {
     imgRoute;
     money: any;
     messageEvent = new EventEmitter<string>();
+    buying: boolean = false;
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private apiBarService: ApiBarService) {
         this.imgRoute = data.url;
@@ -402,6 +498,7 @@ export class MarketBarDialog implements OnInit {
     }
 
     buy(playerId: any) {
+        this.buying = true;
         this.messageEvent.emit(playerId);
         setTimeout(() => {
             this.getPlayerList()
@@ -413,6 +510,7 @@ export class MarketBarDialog implements OnInit {
             next: (response: any) => {
                 this.players = response.data.market;
                 this.money = response.data.money;
+                this.buying = false;
             },
             error: (err: Error) => console.error('Error getting game data: ' + err)
         });

@@ -1,7 +1,6 @@
 import utils from '../utils.js';
 
 class House {
-    _hall = {id: 'hall', clients: []};
     _bar = {id: 'bar', players: [], clients: []};
     _stage = {id: 'stage', players: [], clients: []};
 
@@ -10,12 +9,9 @@ class House {
 
     _school = {id: 'school', players: []};
     _restroom = {id: 'restroom', players: []};
+    _dungeon = {id: 'dungeon', players: []};
 
     constructor() {
-    }
-
-    get hall() {
-        return this._hall;
     }
 
     get bar() {
@@ -38,13 +34,49 @@ class House {
         return this._school;
     }
 
+    get dungeon() {
+        return this._dungeon;
+    }
+
     get restroom() {
         return this._restroom;
     }
 
-    sendToHall(client) {
-        client.location = this._hall.id;
-        this._hall.clients.push(client);
+    json() {
+        console.log('HOUSE JSON');
+        console.log(this._bar.players);
+        console.log(this._bar.clients);
+        return {
+            bar: {
+                id: this._bar.id,
+                players: utils.jsonifyArrayOfClasses(this._bar.players),
+                clients: utils.jsonifyArrayOfClasses(this._bar.clients)
+            },
+            stage: {
+                id: this._stage.id,
+                players: utils.jsonifyArrayOfClasses(this._stage.players),
+                clients: utils.jsonifyArrayOfClasses(this._stage.clients)
+            },
+            private: {
+                id: this._private.id,
+                players: utils.jsonifyArrayOfClasses(this._private.players),
+                clients: utils.jsonifyArrayOfClasses(this._private.clients)
+            },
+            bedroom: {
+                id: this._bedroom.id,
+                players: utils.jsonifyArrayOfClasses(this._bedroom.players),
+                clients: utils.jsonifyArrayOfClasses(this._bedroom.clients)
+            },
+            school: {id: this._school.id, players: utils.jsonifyArrayOfClasses(this._school.players)},
+            dungeon: {id: this._dungeon.id, players: utils.jsonifyArrayOfClasses(this._dungeon.players)},
+            restroom: {id: this._restroom.id, players: utils.jsonifyArrayOfClasses(this._restroom.players)}
+        };
+    }
+
+
+    sendToDungeon(player) {
+        player.location = this._dungeon.id;
+        this._dungeon.players.push(player);
     }
 
     sendToRestroom(player) {
@@ -53,11 +85,11 @@ class House {
     }
 
     sendToBar(player, client) {
-        if (player) {
+        if (player !== null) {
             player.location = this._bar.id;
             this._bar.players.push(player);
         }
-        if (client) {
+        if (client !== null) {
             client.location = this._bar.id;
             this._bar.clients.push(client);
         }
@@ -101,32 +133,21 @@ class House {
         this._school.players.push(player);
     }
 
-    json() {
-        return {
-            hall: {id: this._hall.id, clients: utils.jsonifyArrayOfClasses(this._hall.clients)},
-            bar: {
-                id: this._bar.id,
-                players: utils.jsonifyArrayOfClasses(this._bar.players),
-                clients: utils.jsonifyArrayOfClasses(this._bar.clients)
-            },
-            stage: {
-                id: this._stage.id,
-                players: utils.jsonifyArrayOfClasses(this._stage.players),
-                clients: utils.jsonifyArrayOfClasses(this._stage.clients)
-            },
-            private: {
-                id: this._private.id,
-                players: utils.jsonifyArrayOfClasses(this._private.players),
-                clients: utils.jsonifyArrayOfClasses(this._private.clients)
-            },
-            bedroom: {
-                id: this._bedroom.id,
-                players: utils.jsonifyArrayOfClasses(this._bedroom.players),
-                clients: utils.jsonifyArrayOfClasses(this._bedroom.clients)
-            },
-            school: {id: this._school.id, players: utils.jsonifyArrayOfClasses(this._school.players)},
-            restroom: {id: this._restroom.id, players: utils.jsonifyArrayOfClasses(this._restroom.players)}
-        };
+    clientsWaits() {
+        let newArr = [];
+        this._bar.clients.forEach((client) => {
+            if (client.attended === null) {
+                client.wait--;
+                if (client.wait >= 0) {
+                    newArr.push(client);
+                }
+            } else {
+                // the attended
+                newArr.push(client);
+            }
+        });
+
+        this._bar.clients = newArr;
     }
 }
 

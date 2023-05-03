@@ -1,0 +1,30 @@
+<mat-card class="card" [class.player]="type === 'player'" [class.client]="type === 'client'">
+    <mat-card-header class="head">
+        <div mat-card-avatar class="avatar" *ngIf="type==='player'">
+            <mat-icon [style.color]="getMood(person.stats.mood).color" matTooltip="{{getMood(person.stats.mood).text}}">
+                {{getMood(person.stats.mood).sentiment}}</mat-icon>
+        </div>
+    </mat-card-header>
+    <img mat-card-image matTooltipPosition="above" matTooltip="{{ person.name }}"
+         *ngIf="person.portrait && type==='player'"
+         [src]="'http://localhost:7777/players/' + person.name + '/p.jpg'">
+    <img mat-card-image matTooltipPosition="above" matTooltip="{{ person.name }}"
+         *ngIf="!person.portrait && type==='player'"
+         [src]="'http://localhost:7777/players/noimage.png'">
+
+    <img mat-card-image matTooltipPosition="above" matTooltip="{{ getClientTooltip(person).join('\n') }}"
+         matTooltipClass="multiline-tooltip" *ngIf="type==='client'"
+         [src]="'http://localhost:7777/players/noimage.png'">
+
+    <mat-card-content *ngIf="type==='player'" class="skill" matTooltip="{{getStamina(person.stats.stamina).text}}">
+        <mat-progress-bar class="skill-bar"
+                          [style.--mdc-linear-progress-active-indicator-color]="getStamina(person.stats.stamina).color"
+                          mode="determinate" [value]="person.stats.stamina"></mat-progress-bar>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="type==='client'" class="skill">
+        <mat-progress-bar class="skill-bar"
+                          [style.--mdc-linear-progress-active-indicator-color]="getWait(person.wait).color"
+                          mode="determinate" [value]="getWait(person.wait).value"></mat-progress-bar>
+    </mat-card-content>
+</mat-card>

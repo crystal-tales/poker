@@ -42,9 +42,11 @@ import {
     FullViewBarDialog,
     FullViewVideoBarDialog,
     GameBarComponent,
-    MarketBarDialog
+    MarketBarDialog,
+    PersonCard
 } from "./components/bar/game-bar.component";
 import {MatCardModule} from "@angular/material/card";
+import {OrderByPipe} from './components/order-by.pipe';
 
 @NgModule({
     declarations: [
@@ -67,8 +69,10 @@ import {MatCardModule} from "@angular/material/card";
         ConfirmBarDialog,
         FullViewBarDialog,
         FullViewVideoBarDialog,
+        PersonCard,
         GameBarComponent,
-        MarketBarDialog
+        MarketBarDialog,
+        OrderByPipe
     ],
     imports: [
         BrowserModule,

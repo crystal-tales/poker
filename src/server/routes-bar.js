@@ -35,9 +35,9 @@ router.get('/game', (req, res) => {
     res.json({data: game.json()});
 });
 
-// Siguiente tick
-router.get('/game/tick', (req, res) => {
-    const result = game.nextPhase();
+// Siguiente hora
+router.get('/game/hour', (req, res) => {
+    const result = game.nextHour();
     res.json({data: game.json(), result: result});
 });
 

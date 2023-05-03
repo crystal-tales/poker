@@ -68,3 +68,8 @@ mat-progress-bar.anima .mdc-linear-progress__bar-inner {
     border-color: inherit !important;
     border-top-width: 40px;
 }
+
+
+.multiline-tooltip {
+    white-space: pre-line;
+}

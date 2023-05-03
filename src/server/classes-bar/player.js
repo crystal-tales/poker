@@ -17,6 +17,7 @@ class Player {
     _price = 0;
     _salary = 0;
     _location = 'market';
+    _attendingClientId;
 
     _stats = {
         stamina: 100,
@@ -87,6 +88,14 @@ class Player {
         this._location = value;
     }
 
+    get attendingClientId() {
+        return this._attendingClientId;
+    }
+
+    set attendingClientId(value) {
+        this._attendingClientId = value;
+    }
+
     constructor(player, baseSalary) {
         this._id = player.name;
         this._name = player.name;
@@ -124,13 +133,15 @@ class Player {
         return {
             id: this._id,
             name: this._name,
-            imagesSet: this._images[this._selectedSet],
+            images: this._images,
+            selectedSet: this._selectedSet,
             portrait: this._portrait,
             price: this._price,
             salary: this._salary,
             location: this._location,
             stats: this._stats,
-            skills: this._skills
+            skills: this._skills,
+            attendingClientId: this._attendingClientId
         };
     }
 
@@ -140,9 +151,9 @@ class Player {
         let sets = new Set();
         for (const img of files) {
             const num = img.substring(0, 3);
-            sets.add(num[0]);
             // Es un fichero de imagen de set
             if (!isNaN(parseInt(num[0]))) {
+                sets.add(num[0]);
                 if (!this._images[num[0]]) {
                     this._images[num[0]] = {};
                 }
@@ -161,6 +172,10 @@ class Player {
 
         // Random set
         let items = Array.from(sets);
+        // console.log('debug');
+        // console.log(items);
+        // console.log(Math.floor(Math.random() * items.length));
+        // console.log('--------');
         this._selectedSet = items[Math.floor(Math.random() * items.length)];
     }
 

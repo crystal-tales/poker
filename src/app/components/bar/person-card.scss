@@ -1,0 +1,52 @@
+.card {
+    margin: 5px;
+    cursor: zoom-in;
+}
+
+.card.player {
+    background-color: #841a58;
+}
+
+.card.client {
+    background-color: #1a4484;
+}
+
+.name {
+    font-weight: bold;
+    color: whitesmoke;
+}
+
+.card img {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.card .head {
+    padding: 5px;
+}
+
+.avatar {
+    margin-bottom: 0;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    top: 7px;
+    left: 4px;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.skill {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.skill-bar {
+    width: 50px;
+}
+
+.mat-mdc-card-content:last-child {
+    padding-bottom: 8px;
+}

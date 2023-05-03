@@ -39,6 +39,10 @@ export class ApiBarService {
         return this.httpClient.post(this.uri + '/api/b/game', {}).pipe(catchError(this.handleError));
     }
 
+    public getNextHour() {
+        return this.httpClient.get(this.uri + '/api/b/game/hour').pipe(catchError(this.handleError));
+    }
+
     public postBuyPlayer(playerId: any) {
         return this.httpClient.post(this.uri + '/api/b/player/buy/' + playerId, {}).pipe(catchError(this.handleError));
     }

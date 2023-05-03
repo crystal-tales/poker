@@ -1,4 +1,5 @@
 import Player from './player.js';
+import {default as BarClient} from './client.js';
 import utils from '../utils.js';
 import House from './house.js';
 import {readdirSync} from 'node:fs';
@@ -46,19 +47,76 @@ class Game {
             this._hour = 0;
             this._day++;
 
-            // Salary
+            // Salary cada 7 días ¿?
             if ((this._day % 7) === 0) {
                 this.paySalaries();
             }
         }
+
+        // New clients
+        this.attendNewClients();
+        this._house.clientsWaits();
+        this.checkNewClients();
+
+        // Attend rooms
+        this.attendClients();
+
+        return true;
     }
 
+    attendNewClients() {
+        // mira si hay clientes esperando
+        if (this._house.bar.clients.length === 0) {
+            return null;
+        }
+
+        // si no hay player libre en restroom para atender al bar, nada
+        if (this._house.restroom.players.length === 0) {
+            return null;
+        }
+
+        // TODO
+
+        // de entre los libres elige al que cuadre mejor según exp del player y pref del cliente
+        // puede no cuadrar ninguno (skill por debajo de 20 no vale, y de ahi hasta 50 puede rechazar)
+        // Los que cuadren los enlaza al attending y los manda al bar
+    }
+
+    attendClients() {
+        // Bar -> Stage -> Private -> Bedroom -> Dungeon
+        if (this._house.bar.clients.length > 0) {
+            // TODO
+        }
+    }
+
+    checkNewClients() {
+        // Random influyendo la hora, entre 1 y 100 he de conseguir un valor menor que maxR
+        let probNewClient = 100;
+        if (this._hour >= 22 && this._hour < 2) {
+            probNewClient = 20;
+        } else if (this._hour >= 2 && this._hour < 10) {
+            probNewClient = 0;
+        } else if (this._hour >= 10 && this._hour < 14) {
+            probNewClient = 5;
+        } else if (this._hour >= 14 && this._hour < 19) {
+            probNewClient = 10;
+        } else if (this._hour >= 19 && this._hour < 22) {
+            probNewClient = 5;
+        }
+
+        const rr = utils.random(1, 100);
+        if (rr <= probNewClient) {
+            // New client
+            const cc = new BarClient();
+            this._house.sendToBar(null, cc);
+        }
+    }
 
     listPlayers() {
         const folders = readdirSync(playerDir);
         let plys = [];
         folders.forEach((f, index) => {
-            if (f !== 'readme.md') {
+            if (f !== 'readme.md' && f !== 'noimage.png') {
                 const imgs = readdirSync(playerDir + f);
                 let p = false, txt = null;
                 imgs.forEach(i => {
@@ -142,7 +200,7 @@ class Game {
     }
 
     paySalaries() {
-
+        // TODO
     }
 }
 

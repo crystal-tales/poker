@@ -1,16 +1,112 @@
 .global-container {
     display: flex;
     flex-direction: row;
-    background-color: white;
+    background-color: black;
     height: 100vh;
 }
 
 .house-container {
-    width: 80vw;
+    width: 60vw;
+    overflow-y: auto;
 }
 
+.room {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 100px;
+    margin: 4px 20px;
+}
+
+.room .label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 75px;
+    border-width: 4px;
+    border-style: inset;
+    border-radius: 10px;
+    align-self: stretch;
+}
+
+.room .label span {
+    transform: rotate(-90deg);
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-variant: small-caps;
+    text-align: center;
+}
+
+.room.dungeon {
+    background: rgba(68, 68, 68, 0.5);
+}
+
+.room.dungeon .label {
+    background: #888888;
+    border-color: #444444;
+}
+
+.room.bar {
+    background: rgba(30, 56, 105, 0.5);
+}
+
+.room.bar .label {
+    background: #3361b7;
+    border-color: #1e3869;
+}
+
+.room.stage {
+    background: rgba(18, 110, 133, 0.5);
+}
+
+.room.stage .label {
+    background: #1aa3c5;
+    border-color: #126e85;
+}
+
+.room.private {
+    background: rgba(128, 19, 19, 0.5);
+}
+
+.room.private .label {
+    background: #bb1c1c;
+    border-color: #801313;
+}
+
+.room.bedroom {
+    background: rgba(109, 4, 164, 0.5);
+}
+
+.room.bedroom .label {
+    background: #9611dc;
+    border-color: #6d04a4;
+}
+
+.room.school {
+    background: rgba(176, 155, 12, 0.5);
+}
+
+.room.school .label {
+    background: #e0c71d;
+    border-color: #b09b0c;
+}
+
+.room.restroom {
+    background: rgba(34, 98, 21, 0.5);
+}
+
+.room.restroom .label {
+    background: #3dad26;
+    border-color: #226215;
+}
+
+///////////////
+// SIDEBOARD //
+///////////////
+
 .sideboard-container {
-    width: 20vw;
+    width: 40vw;
     background-color: #666666;
     box-shadow: inset 0px 0px 30px 0px #000;
     padding: 20px;
@@ -19,6 +115,7 @@
 .sideboard-game {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
     box-shadow: inset 0px 0px 10px 0px #000;
     background-color: rgba(2, 2, 2, 0.5);
@@ -36,24 +133,6 @@
     color: whitesmoke;
 }
 
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-/////////////////////////
-
-.sideboard-actions {
-    background-color: rgba(2, 2, 2, 0.2);
-}
-
 .sideboard-container div.big-preview {
     display: flex;
     flex-direction: row;
@@ -62,168 +141,11 @@
 
 .sideboard-container div.big-preview img {
     height: 450px;
-    margin: 0 auto;
-}
-
-.sideboard-player-hand {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-top: 20px;
-    justify-content: space-evenly;
-    background-color: rgba(222, 222, 222, 0.2);
-}
-
-.sideboard-player-hand mat-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    color: whitesmoke;
-}
-
-.sideboard-player-hand img {
-    width: 75px;
-    cursor: zoom-in;
-}
-
-.players-top-container, .players-bottom-container {
-    display: flex;
-    flex-direction: row;
-    height: 40vh;
-}
-
-.player-one-container, .player-two-container, .player-three-container, .player-four-container {
-    width: 40vw;
-    background: #000;
-    display: flex;
-    flex-direction: row;
-    border: 5px #0366d6 inset;
-}
-
-.player-two-container {
-    border-color: #388e3c;
-}
-
-.player-three-container {
-    border-color: #9c27b0;
-}
-
-.player-four-container {
-    border-color: #ff4b01;
-}
-
-.player-image {
-    position: relative;
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 58%;
-    height: 100%;
-}
-
-.player-stats {
-    width: 12%;
-    background-image: url("http://localhost:7777/anima/general/wood.jpg");
-    background-size: 200px;
-}
-
-.player-name {
-    position: absolute;
-    top: 0;
-    left: 5px;
-    color: whitesmoke;
-    -webkit-text-stroke: #000 1px;
-    text-stroke: #000 1px;
-    font-weight: 500;
-}
-
-.player-name.active {
-    color: gold;
-    -webkit-text-stroke: #000 0px;
-    text-stroke: #000 0px;
-}
-
-.player-hand {
-    color: whitesmoke;
-    font-weight: bold;
-    font-size: 1.2rem;
-    text-align: center;
-    margin: 10px 0;
-}
-
-.player-mission {
-    margin: 10px 0;
-    text-align: center;
-}
-
-.player-mission img {
-    width: 90%;
-    cursor: zoom-in;
-}
-
-.player-board {
-    position: relative;
-    width: 30%;
-    background-color: rgba(222, 222, 222, 0.3);
-}
-
-.player-board-card {
-    width: 115px;
-    height: 160px;
-    position: absolute;
-    background-color: #222222;
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: zoom-in;
-}
-
-.player-board-card.one {
-    top: 6px;
-    left: 5px;
-}
-
-.player-board-card.two {
-    top: 6px;
-    right: 5px;
-}
-
-.player-board-card.three {
-    bottom: 6px;
-    left: 5px;
-}
-
-.player-board-card.four {
-    bottom: 6px;
-    right: 5px;
+    margin: 10px auto;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.85);
 }
 
 
-.gamezone-container {
-    height: 20vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    //border: 5px brown inset;
-    background-image: url("http://localhost:7777/anima/general/wood.jpg");
-    background-size: 200px;
-}
-
-.gamezone-place-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.gamezone-card {
-    margin: 0 5px;
-    width: 115px;
-    height: 160px;
-    background-color: #222222;
-    background-repeat: no-repeat;
-    background-size: contain;
-    cursor: zoom-in;
-}
-
-.gamezone-card.place.one {
-
+.sideboard-actions {
+    background-color: rgba(2, 2, 2, 0.2);
 }

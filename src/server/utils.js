@@ -104,4 +104,11 @@ const random = function (min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 };
 
-export default {saveImages, capitalizeFirstLetter, listRivalsAvailable, jsonifyArrayOfClasses, random, rollDice};
+export default {
+    saveImages,
+    capitalizeFirstLetter,
+    listRivalsAvailable,
+    jsonifyArrayOfClasses,
+    random,
+    rollDice
+};

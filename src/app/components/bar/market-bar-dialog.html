@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Do you see something you like?</h1>
 <div class="market-container">
-    <mat-card class="card" *ngFor="let p of players">
+    <mat-card class="card" *ngFor="let p of players | orderBy: 'asc':'price'">
         <mat-card-header>
             <div mat-card-avatar class="avatar">
                 <mat-icon *ngIf="p.stats.sex===1" class="woman">female</mat-icon>
@@ -72,7 +72,8 @@
             <div class="salary">
                 Salary ${{p.salary}}
             </div>
-            <button mat-raised-button color="primary" class="negrita" (click)="buy(p.id)" [disabled]="money < p.price">
+            <button mat-raised-button color="primary" class="negrita" (click)="buy(p.id)"
+                    [disabled]="money < p.price || buying">
                 Buy for ${{p.price}}</button>
         </mat-card-actions>
     </mat-card>

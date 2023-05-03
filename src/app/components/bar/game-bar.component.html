@@ -1,28 +1,73 @@
 <div class="global-container">
     <div class="house-container">
-        <div class="hall">
-            <div *ngFor="let p of game?.house.hall.clients">{{p.name}}</div>
+        <div class="room restroom">
+            <div class="label"><span>Restroom</span></div>
+            <div class="player" *ngFor="let p of playersInRestroom">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 0)"></person-card>
+            </div>
         </div>
-        <div class="restroom">
-            <div *ngFor="let p of playersInRestroom">Name {{p.name}}</div>
+        <div class="room school">
+            <div class="label"><span>School</span></div>
+            <div class="player" *ngFor="let p of playersInSchool">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 1)"></person-card>
+            </div>
+        </div>
+        <div class="room bar">
+            <div class="label"><span>Bar</span></div>
+            <div class="player" *ngFor="let p of playersInBar">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 2)"></person-card>
+            </div>
+            <div class="client" *ngFor="let c of clientsInBar">
+                <person-card [person]="c" type="client" (click)="setPreviewImg(c, 2)"></person-card>
+            </div>
+        </div>
+        <div class="room stage">
+            <div class="label"><span>Stage</span></div>
+            <div class="player" *ngFor="let p of playersInStage">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 3)"></person-card>
+            </div>
+            <div class="client" *ngFor="let c of clientsInStage">{{c.name}}</div>
+        </div>
+        <div class="room private">
+            <div class="label"><span>Private</span></div>
+            <div class="player" *ngFor="let p of playersInPrivate">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 4)"></person-card>
+            </div>
+            <div class="client" *ngFor="let c of clientsInPrivate">{{c.name}}</div>
+        </div>
+        <div class="room bedroom">
+            <div class="label"><span>Bedroom</span></div>
+            <div class="player" *ngFor="let p of playersInBedroom">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 5)"></person-card>
+            </div>
+            <div class="client" *ngFor="let c of clientsInBedroom">{{c.name}}</div>
+        </div>
+        <div class="room dungeon">
+            <div class="label"><span>Dungeon</span></div>
+            <div class="player" *ngFor="let p of playersInDungeon">
+                <person-card [person]="p" type="player" (click)="setPreviewImg(p, 5)"></person-card>
+            </div>
         </div>
     </div>
 
     <div class="sideboard-container">
         <div class="sideboard-game">
             <span class="money">$ {{game?.money}}</span>
-            <span class="time">Day {{game?.day}} - {{game?.hour}}h</span>
+            <button mat-icon-button (click)="openMarket()" color="primary" matTooltip="Market">
+                <mat-icon>store_mall_directory</mat-icon>
+            </button>
+            <span class="time">Day {{game?.day}} - {{game?.hour}}:00
+                <button mat-icon-button (click)="resumeOrPause()" color="">
+                    <mat-icon *ngIf="paused">play_arrow</mat-icon>
+                    <mat-icon *ngIf="!paused">pause</mat-icon>
+                </button></span>
         </div>
 
         <div class="big-preview">
-            <!--            <img [src]="getPreviewImg()"/>-->
+            <img [src]="getPreviewImg()"/>
         </div>
 
         <div class="sideboard-actions">
-            <button mat-raised-button (click)="openMarket()" color="primary">
-                <mat-icon>store_mall_directory</mat-icon>
-                Market
-            </button>
         </div>
     </div>
 </div>
